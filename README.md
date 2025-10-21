@@ -1,6 +1,4 @@
 # SecureDrop
-SecureDrop is a collaborative effort to create our own version of Apple's AirDrop
-
 Project: Secure File Transfer
 
 Objective
