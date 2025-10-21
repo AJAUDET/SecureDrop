@@ -9,12 +9,22 @@ def generateKeys(pub, priv):
     priv_key = RSA.generate(2048)
     pub_key = priv_key.public_key()
     
-    with open(pub, 'r+') as pubF:
-        data = {"Public key": pub_key.export_key().decode("utf-8")}
-        json.dump(data, pubF, indent=4)
-    with open(priv, 'r+') as privF:
-        data = {"Private Key": priv_key.export_key().decode("utf-8")}
-        json.dump(data, privF, indent=4)
+    try: 
+        with open(pub, 'x') as pubF:
+            data = {"Public key": pub_key.exportKey().decode("utf-8")}
+            print(json.dumps(data, separators=(',', ':')), file=pubF)
+    except:
+        with open(pub, 'a+') as pubF:
+                data = {"Public key": pub_key.export_key().decode("utf-8")}
+                print(json.dumps(data, separators=(',', ':')), file=pubF)
+    try:
+        with open(priv, 'x') as privF:
+            data = {"Private Key": priv_key.export_key().decode("utf-8")}
+            print(json.dumps(data, separators=(',', ':')), file=privF)
+    except:
+        with open(priv, 'a+') as privF:
+            data = {"Private Key": priv_key.export_key().decode("utf-8")}
+            print(json.dumps(data, separators=(',', ':')), file=privF)
 
 if __name__ == '__main__':
     if (len(sys.argv) != 4):
