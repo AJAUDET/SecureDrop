@@ -1,7 +1,7 @@
 #   Author : AJ Audet
 #   Date : 10/19/2025
 #   Purpose : encrypt and decrypt files using PGP principles
-
+#   ALT : this can be the basis for how we encrypt files before sending them over a network
 import sys
 from Crypto.Random import get_random_bytes
 from Crypto.PublicKey import RSA
