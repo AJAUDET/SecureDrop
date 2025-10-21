@@ -1,4 +1,3 @@
-## SecureDrop
 # Objective
 The aim of this project is to familiarize you with cryptographic tools by implementing a secure file transfer
 protocol, similar to the widely-used AirDrop feature in Apple devices. Throughout this project, you
