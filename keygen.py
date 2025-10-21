@@ -4,6 +4,7 @@ import sys
 import json
 from Crypto.PublicKey import RSA
 
+# need to encrypt the keys, unsecured storing as plaintext for both public and private keys
 def generateKeys(pub, priv):
     priv_key = RSA.generate(2048)
     pub_key = priv_key.public_key()
