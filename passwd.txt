@@ -1,0 +1,2 @@
+{"User: ":"Arthur","Password: ":"{\"salt\": \"a16a67fb186607f3adb7587625cab146\", \"hash\": \"aa023b8e2ce845eb9b2e810e7ceea6a4eb04a15fbafe7792624ac25995aabab8\"}"}
+{"User: ":"AJ","Password: ":"{\"salt\": \"0c792dbdc982f3fb267ef74c04af06bf\", \"hash\": \"7a5b2e5bd04fc84545c76ff8e23ec5b17584af2b0ac37b6cea623f959caed12f\"}"}
