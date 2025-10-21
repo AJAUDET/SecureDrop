@@ -3,30 +3,30 @@
 # ALT : We can use this to generate a pub/priv key pair for our users after registration
 
 import sys
-import json
+import os
 from Crypto.PublicKey import RSA
 
-# need to encrypt the keys, unsecured storing as plaintext for both public and private keys
 def generateKeys(pub, priv):
     priv_key = RSA.generate(2048)
     pub_key = priv_key.public_key()
     
-    try: 
-        with open(pub, 'x') as pubF:
-            data = {"Public key": pub_key.exportKey().decode("utf-8")}
-            print(json.dumps(data, separators=(',', ':')), file=pubF)
-    except:
-        with open(pub, 'a+') as pubF:
-                data = {"Public key": pub_key.export_key().decode("utf-8")}
-                print(json.dumps(data, separators=(',', ':')), file=pubF)
     try:
-        with open(priv, 'x') as privF:
-            data = {"Private Key": priv_key.export_key().decode("utf-8")}
-            print(json.dumps(data, separators=(',', ':')), file=privF)
-    except:
-        with open(priv, 'a+') as privF:
-            data = {"Private Key": priv_key.export_key().decode("utf-8")}
-            print(json.dumps(data, separators=(',', ':')), file=privF)
+        if os.path.exists(pub) or os.path.exists(priv):
+            print("Error: Key files already exist")
+            return
+
+        with open(pub, 'wb') as pubF:
+            pubF.write(pub_key.export_key())
+
+        with open(priv, 'wb') as privF:
+            privF.write(priv_key.export_key())
+
+        os.chmod(priv, 0o600)
+        
+        print("Keys generated successfully")
+        
+    except Exception as e:
+        print(f"Error generating keys: {type(e).__name__}")
 
 if __name__ == '__main__':
     if (len(sys.argv) != 4):
