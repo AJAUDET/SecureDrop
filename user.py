@@ -33,6 +33,8 @@ def add_user(outFile):
         data["Users"][user] = pwd_hash
         with open(outFile, 'w') as outF:
             json.dump(data, outF, indent=2)
+        os.chmod(outFile, 0o600)
+
     except json.JSONDecodeError:
         print("Error: Corrupted database file")
     except PermissionError:
