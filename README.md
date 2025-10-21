@@ -50,8 +50,10 @@ secure_drop> help
 "send" -> Transfer file to contact
 "exit" -> Exit SecureDrop
 secure_drop>
-# The "add" command adds a new contact for the user. If a contact already exists, it
-# overwrites the existing details. Note that the email address is used as user identifier.
+
+The "add" command adds a new contact for the user. If a contact already exists, it
+overwrites the existing details. Note that the email address is used as user identifier.
+
 secure_drop> add
 Enter Full Name: Alice
 Enter Email Address: alice@gmail.com
@@ -61,18 +63,21 @@ Enter Full Name: Bob
 Enter Email Address: bob@gmail.com
 Contact Added.
 secure_drop>
-# The "list" command displays only those contacts that meet specific criteria:
-# 1. The contact email is in this user's contacts.
-# 2. The contact has also added this user's email to their contacts.
-# 3. The contact is online on the same network.
+
+The "list" command displays only those contacts that meet specific criteria:
+1. The contact email is in this user's contacts.
+2. The contact has also added this user's email to their contacts.
+3. The contact is online on the same network.
+4. 
 secure_drop> list
 The following contacts are online:
 * Bob <bob@gmail.com>
 secure_drop>
-# The "send" command transfers a file to the contact. The contact must receive an
-# alert and approve the transfer. You can save the file to a directory of your choice,
-# using the same file name as the transmitted file.
-# Contact 'John Doe <john.doe@gmail.com>' is sending a file. Accept (y/n)?
+
+The "send" command transfers a file to the contact. The contact must receive an
+alert and approve the transfer. You can save the file to a directory of your choice,
+using the same file name as the transmitted file.
+Contact 'John Doe <john.doe@gmail.com>' is sending a file. Accept (y/n)?
 secure_drop> send bob@gmail.com /home/john/Documents/bob.zip
 Contact has accepted the transfer request.
 File has been successfully transferred.
