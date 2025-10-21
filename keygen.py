@@ -1,5 +1,6 @@
 # Author : AJ Audet  
 # Purpose : generate a public/private key pair and store them in a json string in a .txt file
+# ALT : We can use this to generate a pub/priv key pair for our users after registration
 
 import sys
 import json
