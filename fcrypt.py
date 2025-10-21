@@ -1,7 +1,6 @@
-#   Name : AJ Audet
+#   Author : AJ Audet
 #   Date : 10/19/2025
 #   Purpose : encrypt and decrypt files using PGP principles
-#   Time Spent : 3 hours
 
 import sys
 from Crypto.Random import get_random_bytes
