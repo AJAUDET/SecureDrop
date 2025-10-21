@@ -1,4 +1,5 @@
-#   Purpose : generate a public/private key pair and store them in a json string in a .txt file
+# Author : AJ Audet  
+# Purpose : generate a public/private key pair and store them in a json string in a .txt file
 
 import sys
 import json

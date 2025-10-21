@@ -3,6 +3,8 @@
 #   AJ: 33%
 #   Lourenco: 33%
 #   Bryan: 33%
+#
+#   Purpose : Base for how we store / verify a user's password and username information
 
 from os import urandom 
 import json 
