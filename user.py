@@ -1,7 +1,6 @@
 #   Author : AJ Audet
 #   Purpose : Implementing adding a user and their password as a hash to a file
 #   ALT : Basis for how we add/verify users for Secure Drop
-
 import json
 import sys
 import os
