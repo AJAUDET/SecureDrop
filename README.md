@@ -1,7 +1,7 @@
 # SecureDrop
 Project: Secure File Transfer
 
-Objective
+# Objective
 The aim of this project is to familiarize you with cryptographic tools by implementing a secure file transfer
 protocol, similar to the widely-used AirDrop feature in Apple devices. Throughout this project, you
 will gain practical experience in various cryptographic and cybersecurity concepts, including symmetric
@@ -9,7 +9,7 @@ and asymmetric cryptography, digital certificates, public key infrastructure, mu
 Project Team & Milestones
 This project is designed to challenge and enhance your critical reasoning skills. To streamline the implementation process, we have three key recommendations:
 
-Overview
+# Overview
 Secure file transfer has various real-world applications, such as uploading source code, transmitting configuration files, or sharing sensitive banking information. In this project, we will focus on a specific scenario:
 securely transferring a file to another person’s computer within our contact list and on the same local network
 (wired or wireless).
@@ -17,8 +17,9 @@ This project will take shape as a command-line utility, referred to as SecureDro
 named secure_drop. Our primary emphasis will be on the Linux environment. As the semester progresses,
 the instructor will furnish Docker containers and networks to facilitate code deployment. Below, we provide a
 sample project run, accompanied by explanatory comments:
-# The secure_drop command serves as the entry point for the application. If no user exists,
-# the registration module will activate, with the email address serving as user identifier.
+
+The secure_drop command serves as the entry point for the application. If no user exists,
+the registration module will activate, with the email address serving as user identifier.
 $ secure_drop
 No users are registered with this client.
 Do you want to register a new user (y/n)? y
@@ -30,9 +31,11 @@ Passwords Match.
 User Registered.
 Exiting SecureDrop.
 $
-# The user registration is a one-time process. Once a user is registered on a client, the
-# login module is subsequently activated. After a successful login, a "secure_drop>" shell
-# is initiated.
+
+# Usage
+The user registration is a one-time process. Once a user is registered on a client, the
+login module is subsequently activated. After a successful login, a "secure_drop>" shell
+is initiated.
 $ secure_drop
 Enter Email Address: john.doe@gmail.com
 Enter Password: ****
@@ -76,7 +79,7 @@ File has been successfully transferred.
 secure_drop> exit
 $
 
-Milestone 1 - User Registration
+# Milestone 1 - User Registration
 While implementing this module, consider the following:
 1. Database implementation is not required; simple files, YAML, or JSON structures suffice.
 2. Initially, implement the module without security controls. After verifying its correctness, introduce
@@ -88,21 +91,21 @@ password security.
 Assuming a CA (Certificate Authority) is present and trusted on all clients can facilitate the use of
 digital certificates.
 
-Milestone 2 - User Login
+# Milestone 2 - User Login
 This milestone can be implemented swiftly. Key considerations include:
 1. Leverage code reuse, as much of the code will resemble the User Registration milestone.
 2. Examine how data from login credentials can bolster security in upcoming milestones. Keep this
 information in memory while ensuring that password security remains intact. It’s essential to forget all
 data from memory when the program exits to maintain security.
 
-Milestone 3 - Adding Contacts
+# Milestone 3 - Adding Contacts
 This module is relatively simple and can be implemented quickly. Key points to consider include:
 1. Database implementation is unnecessary; simple files, YAML, or JSON structures suffice. Assume that
 each user will have a limited number of contacts.
 2. Explore ways to use information generated in Milestone 2 to ensure the confidentiality and integrity of
 contact information. Prevent unauthorized access or tampering by malicious actors.
 
-Milestone 4 - Listing Contacts
+# Milestone 4 - Listing Contacts
 This milestone presents a complex challenge, demanding meticulous design and implementation. It marks
 the initial phase where the application communicates over a network, expanding its attack surface. When
 working on this module, consider the following key points:
@@ -119,7 +122,7 @@ information can lead to spam and targeted attacks.
 6. Consider exchanging unique and protected information between entities to enhance security without
 requiring reauthentication in subsequent steps. Ensure this information remains confidential.
 
-Milestone 5 - Secure File Transfer
+# Milestone 5 - Secure File Transfer
 The complexity of this milestone depends on previous milestones. Key considerations include:
 1. Efficiently transmit large files while maintaining file confidentiality and integrity. The received file must
 match the transmitted one before notifying the user of a successful transfer.
