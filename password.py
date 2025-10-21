@@ -5,6 +5,7 @@
 #   Bryan: 33%
 #
 #   Purpose : Base for how we store / verify a user's password and username information
+#   ALT : This can be the basis for how we create a user's log in information, storing it and verifying users
 
 from os import urandom 
 import json 
