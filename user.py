@@ -9,24 +9,29 @@ from password import create_salted_hash
 from Crypto.PublicKey import RSA
 
 def add_user():
-    user = input("Enter a Username: ")
+    username = input("Enter a Username: ")
+    email = input("Enter your Email: ")
     pwd = pwinput.pwinput(prompt="Enter a Password: ", mask='*')
     try:
-        if os.path.exists('passwd.txt'):
-            with open('passwd.txt', 'r') as outF:
+        if os.path.exists('passwd.json'):
+            with open('passwd.json', 'r') as outF:
                 data = json.load(outF)
                 if "User" in data:
                     old_usr = data["User"]
                     old_pwd = data["Password"]
                     data = {
                         "Users": {
-                            old_usr : old_pwd
+                            old_usr : {
+                                "Password":old_pwd,
+                                "Email":"",
+                                "Public Key":""
+                            }
                         }
                     }
         else:
             data = {"Users": {}}
 
-        if user in data["Users"]:
+        if username in data["Users"]:
             print(f"User already registered")
             return
 
@@ -37,16 +42,18 @@ def add_user():
         public_key_str = public_key.export_key().decode("utf-8")
         
         pwd_hash = create_salted_hash(pwd)
-        data["Users"][user] = {
-            "Password":pwd_hash,
-            "Public Key":public_key_str
+        
+        data["Users"][username] = {
+            "Password": pwd_hash,
+            "Email": email,
+            "Public Key": public_key_str
             }
-        with open('passwd.txt', 'w') as outF:
+        with open('passwd.json', 'w') as outF:
             json.dump(data, outF, indent=2)
 
-        with open(f"{user}.priv", 'w') as outF:
+        with open(f"{username}.priv", 'w') as outF:
             data = private_key_str
-            json.dump(data, outF)
+            print(f"{data}", file=outF)
 
         print("User created successfully")
     except json.JSONDecodeError:
