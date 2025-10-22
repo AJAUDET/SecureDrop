@@ -14,3 +14,9 @@
   - Milestone 5: Proof Of Concept without network sockets firrst then adapt it
   - Milestone 3: Track a User's "Friends" in a JSON string and then allow for communication between users if they are on each other's friend list
     - Friend info is a LOCAL FILE, users do not have access to that information
+
+# General Notes
+  - When I talked to Dr. Narain he said we can work off of the assumption that the files are secure-ish
+  - We are operating under the idea that user's cannot see eachother's friend list
+  - An attacker can see everything except for the private key files
+  - Since the Contact/Friend files are local we need to find a way to have users check if they are added on eachother's lists
