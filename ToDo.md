@@ -11,5 +11,6 @@
   - Milestone 5: TOTO
 
 # Ideas
-  - Milestone 5: Python server to host communications between users, use tcp sockets to do this
+  - Milestone 5: Proof Of Concept without network sockets firrst then adapt it
   - Milestone 3: Track a User's "Friends" in a JSON string and then allow for communication between users if they are on each other's friend list
+    - Friend info is a LOCAL FILE, users do not have access to that information
