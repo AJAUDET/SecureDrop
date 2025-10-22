@@ -43,10 +43,12 @@ def add_user():
             }
         with open('passwd.txt', 'w') as outF:
             json.dump(data, outF, indent=2)
+
         with open(f"{user}.priv", 'w') as outF:
             data = private_key_str
             json.dump(data, outF)
 
+        print("User created successfully")
     except json.JSONDecodeError:
         print("Error: Corrupted database file")
     except PermissionError:
