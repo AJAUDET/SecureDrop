@@ -4,11 +4,12 @@
 import json
 import sys
 import os
+import pwinput
 from password import create_salted_hash
 
 def add_user(outFile):
     user = input("Enter a Username: ")
-    pwd = input("Enter a Password: ")
+    pwd = pwinput.pwinput(prompt="Enter a Password: ", mask='*')
     try:
         if os.path.exists(outFile):
             with open(outFile, 'r') as outF:
