@@ -14,7 +14,7 @@ def verify():
         with open('passwd.txt', 'r') as f:
             data = json.load(f)
             if inp_user in data["Users"]:
-                stored_hash = data["Users"][inp_user]
+                stored_hash = data["Users"][inp_user]["Password"]
                 if password.verify_password(stored_hash, inp_pwd):
                     print(f"Log in successful")
                 else:
