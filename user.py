@@ -6,13 +6,14 @@ import sys
 import os
 import pwinput
 from password import create_salted_hash
+from Crypto.PublicKey import RSA
 
-def add_user(outFile):
+def add_user():
     user = input("Enter a Username: ")
     pwd = pwinput.pwinput(prompt="Enter a Password: ", mask='*')
     try:
-        if os.path.exists(outFile):
-            with open(outFile, 'r') as outF:
+        if os.path.exists('passwd.txt'):
+            with open('passwd.txt', 'r') as outF:
                 data = json.load(outF)
                 if "User" in data:
                     old_usr = data["User"]
@@ -29,11 +30,22 @@ def add_user(outFile):
             print(f"User already registered")
             return
 
+        private_key = RSA.generate(2048)
+        public_key = private_key.public_key()
+        
+        private_key_str = private_key.export_key().decode("utf-8")
+        public_key_str = public_key.export_key().decode("utf-8")
+        
         pwd_hash = create_salted_hash(pwd)
-        data["Users"][user] = pwd_hash
-        with open(outFile, 'w') as outF:
+        data["Users"][user] = {
+            "Password":pwd_hash,
+            "Public Key":public_key_str
+            }
+        with open('passwd.txt', 'w') as outF:
             json.dump(data, outF, indent=2)
-        os.chmod(outFile, 0o644)
+        with open(f"{user}.priv", 'w') as outF:
+            data = private_key_str
+            json.dump(data, outF)
 
     except json.JSONDecodeError:
         print("Error: Corrupted database file")
@@ -44,14 +56,13 @@ def add_user(outFile):
           
 
 if __name__ == "__main__":
-    if (len(sys.argv) != 3):
+    if (len(sys.argv) != 2):
         print(f"Usage:")
         print(f"\tpython3 add_user.py --add <outFile>")
         sys.exit(1)
     mode = sys.argv[1]
-    pwd_file = sys.argv[2]
     
     if mode == '--add':
-        add_user(pwd_file)
+        add_user()
     else:
         print(f"Improper Usage")
