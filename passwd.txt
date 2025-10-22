@@ -1,6 +1,12 @@
 {
   "Users": {
-    "Test": "{\"salt\": \"c11be0a3ba2384bfc10a938207a44724\", \"hash\": \"b63f5b3fb828cfa621f37c8322c1d97e72222e3f661cc20a9c6b34282030ed4d\"}",
-    "Hello": "{\"salt\": \"a42b3dbd0a37028f817e4372b6274b3c\", \"hash\": \"0d9caf502903d924232996093e351116f40adeee472dcd8df1011614b41a3d58\"}"
+    "Gigi": {
+      "Password": "{\"salt\": \"019969716e0fbd1823cfc788cdc44ceb\", \"hash\": \"260ac815afd5bc09abd757229e89a0084be1686fb70708468ad64acda93f5eb8\"}",
+      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsj912A0hv4D7UcFyyDOM\nBtcetjfTpRBqPvPCb6gmHvCfp5gyb5KgUyHAAs0VsspU4J36FQRO+FMUjGWwBD0F\nFJDnt6/Th2I039rJDOsB+GjQXtRPWjFo1FJQz2civ3PQZcpJU4u9z41/4RZfdz/E\nIsyugBjl2+x4k6sFAL8vc8u2s36u//yJY3hj2kxNdt1Y6SdOnXeZ/XD9LLqAsg5Z\nX8e15DtHmA8SpfpqUYhFScx8Rc4GNIpdwcbLFzP/+DV3QIq4ry52AYAF4olx+l4b\nHswO5Y84+hWD/OOi3jS6ZGCIIAwvg/Xa8pqF1Td2/ujCTd3SWhvNzjUIpyPWQ4R5\nXwIDAQAB\n-----END PUBLIC KEY-----"
+    },
+    "Nerissa": {
+      "Password": "{\"salt\": \"02cc91738c0c2adc78e3ae474213a9fc\", \"hash\": \"54e762a63bc6081da54ad97386a07415b9bdcc3985e9d71f11af18a3696fd93e\"}",
+      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnY/hkPqK3bLc7t2wVaP9\ntNdLIIU8LODgvPJuq3NkPW9YWJd5DRZYdf34ZX42damR5pIDX9vIU0RDP8S0oCih\n/IYKaE8lbuo2yi+5wwmByXYCUOfkHj/E4CH8WBid8Kp3/jPSGH+B5qDsTRubqEHB\ndFPqDDtLtmg15DhKkIau0D/D5/JQKRMLnRijjSAhtGWmRBh7Q19UrbwumKd/LBso\ncrJ8WCOnOQW7X9KvBfIRiyQ6Yj0AeFDCHXX3NDiE3ZDMPkOmuOYxisKXFwVQ2v3E\npBCSkK1j+/muSKuJuW6GjX8eY4XFGylWi3/3w8WE5gbh2qewH90BZeB+PQfAQ0mM\nfwIDAQAB\n-----END PUBLIC KEY-----"
+    }
   }
 }
