@@ -1,0 +1,6 @@
+{
+  "Users": {
+    "Test": "{\"salt\": \"c11be0a3ba2384bfc10a938207a44724\", \"hash\": \"b63f5b3fb828cfa621f37c8322c1d97e72222e3f661cc20a9c6b34282030ed4d\"}",
+    "Hello": "{\"salt\": \"a42b3dbd0a37028f817e4372b6274b3c\", \"hash\": \"0d9caf502903d924232996093e351116f40adeee472dcd8df1011614b41a3d58\"}"
+  }
+}
