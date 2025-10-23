@@ -11,7 +11,7 @@ def verify():
     try:
         inp_user = input("Enter Username: ")
         inp_pwd = pwinput.pwinput(prompt="Enter Password: ", mask='*')
-        with open('passwd.txt', 'r') as f:
+        with open('passwd.json', 'r') as f:
             data = json.load(f)
             if inp_user in data["Users"]:
                 stored_hash = data["Users"][inp_user]["Password"]
