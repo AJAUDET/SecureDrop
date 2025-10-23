@@ -1,4 +1,4 @@
-#   Author : Lourenco
+#   Author : Lourenco DaSilva (dslourenco22) 
 #   Purpose : Adding people to a contacts list then verify them
 #   ALT : We should change this up to have users have their own list that they use to verify against the master list
 
