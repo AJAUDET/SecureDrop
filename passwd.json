@@ -14,6 +14,11 @@
       "Password": "{\"salt\": \"6e7262045fab6d679b366d2ed34baed4\", \"hash\": \"94a07baddc6b65e6aa448fb597a180ad6cf2045eee1120c3fb9c50099cf29069\"}",
       "Email": "lucas@test.cs",
       "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxHRA+Q62YT6BDLMR+SZ1\nk05j+qFGYLFryq0/F5uln4lmZc9xm5VTUW2HyS0WTzdBs0TZL1EZ5M6eKB7AzLCp\nExG0fHBXkfRCfl2EHnZHaAxrKIZrr9zHGGfYs2+1FUVkbk+qjjBezypafrNlX/PH\nwj4z6ihV/Ky09iAfoNdo0GJbV5YgKnF4kapAPCpLMMvWkbvLMOevehbMJLIxQtZz\nKvdsNWqqC1XMN2+2YX752DHDhZ+bezn3C9t60X753wbSYDzQinj7lzxN9kYCAHFO\nWG38nrl+Ll3IwFmvAjnR+b0ZhtcBcp6M5L6FB/Vmrnx9k+0zhUAmhQGbNjRtVpdj\nGwIDAQAB\n-----END PUBLIC KEY-----"
+    },
+    "admin": {
+      "Password": "{\"salt\": \"35d50674a56713a57aa1751bb2125244\", \"hash\": \"39e8227b26ab0bb412532282746c6c433f2f23f6e02892d690b91dbc64de52db\"}",
+      "Email": "admin@securedrop.cs",
+      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsDw4PSTFg+2f9b7B9ea3\nPV/DMnWAyEs6cRul7FEcG3ptIyyyts10gEO7ZIcJAkCY2tGpmrQNbUYWKD06s0jz\nEBgBkWH0vl6rdpbouQV1NyYD/wARMMjy8U/QvsD9RpI6V+NAqCcF46+x61PTQAzl\nZwGtvprEk2I5b1PMNwdxe9N8E3aKjCYpm/HumbLz6umiT74Ud+AQr3qp8O9LvpdE\n2ybGxV9r2XtaaWfJg/WTAXXfWLZL0mh/iNyj/KysxgMEfVOFEDl8eYWdFyR9JbeE\n8zTmKO8nBS71w2slrICBvaLxWli4xAFbNvMsoBZ26VLk9Qj5ZHgzQ8QbzoZI82si\nXwIDAQAB\n-----END PUBLIC KEY-----"
     }
   }
 }

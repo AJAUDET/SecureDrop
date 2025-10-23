@@ -105,3 +105,36 @@ def verify_contact(username):
         print(f"Email: {contacts[contact_username]['email']}")
     else:
         print(f"Contact '{contact_username}' not found in your contacts.")
+
+        
+def admin_list(admin_username):
+    if admin_username.lower() != "admin":
+        print("Access denied. Only admin can view this file.")
+        return
+
+    with open(MASTER_CONTACTS_FILE, "r") as f:
+        master_contacts = json.load(f)
+
+    if not master_contacts:
+        print("No contacts recorded in the admin file.")
+        return
+
+    print("Master Contact Log:")
+    for key, details in master_contacts.items():
+        added_by = details["added_by"]
+        print(f"- {key} | Added by: {added_by} | {details['contact_full_name']} ({details['contact_email']})")
+
+def admin_clear(admin_username):
+    if admin_username.lower() != "admin":
+        print("Access denied. Only admin can perform this action.")
+        return
+
+    confirm = input("Are you sure you want to clear the master contact log? (y/n): ").strip().lower()
+    if confirm != "y":
+        print("Operation cancelled.")
+        return
+
+    with open(MASTER_CONTACTS_FILE, "w") as f:
+        json.dump({}, f, indent=4)
+    print("Admin master contact log cleared.")
+
