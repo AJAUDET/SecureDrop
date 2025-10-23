@@ -2,8 +2,8 @@ import verify
 import pwinput
 import user
 from contactmanage import add_contact, list_contacts, verify_contact, admin_list, admin_clear
+from network import start_network
 import sys
-
 
 command_map = {
     "add": add_contact,
@@ -13,7 +13,6 @@ command_map = {
     "admin_clear": admin_clear,
     "exit": lambda username: sys.exit(0)
 }
-
 
 def main(username):
     print(f"Welcome to Secure Drop, {username}!")
@@ -37,7 +36,10 @@ if __name__ == '__main__':
     login = input("Would you like to register (y/n): ").strip()
     if login.lower() == 'y':
         user.add_user()
-    username = input("Enter Username: ")
+    username = input("Enter Username: ").strip()
     pwd = pwinput.pwinput(prompt="Enter your Password: ", mask='*')
-    username = verify.verify(username, pwd) 
-    main(username)  
+    verify.verify(username, pwd)
+
+    start_network(username)  #startbroadcast/listen for users
+
+    main(username)

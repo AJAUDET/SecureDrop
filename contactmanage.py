@@ -4,6 +4,7 @@
 
 import os
 import json
+from network import get_online_users
 
 CONTACTS_DIR = "contacts"
 MASTER_CONTACTS_FILE = os.path.join(CONTACTS_DIR, "admin_master_contacts.json")
@@ -65,29 +66,25 @@ def list_contacts(username):
     with open(contacts_file, "r") as f:
         contacts = json.load(f)
 
-    if not contacts:
-        print("You have no contacts.")
+    online_set = get_online_users()
+    mutual_online = []
+
+    for contact_username in contacts:
+        contact_file = get_user_contacts_file(contact_username)
+        if not os.path.exists(contact_file):
+            continue
+        with open(contact_file, "r") as f:
+            their_contacts = json.load(f)
+        if username in their_contacts and contact_username in online_set:
+            mutual_online.append(contact_username)
+
+    if not mutual_online:
+        print("No contacts currently online.")
     else:
-        print(f"{username}'s Contacts:")
-        for contact_username, details in contacts.items():
-            print(f"- {contact_username}: {details['full_name']} ({details['email']})")
-
-def list_admin_contacts(admin_username):
-    if admin_username.lower() != "admin":
-        print("Access denied. Only admin can view this file.")
-        return
-
-    with open(MASTER_CONTACTS_FILE, "r") as f:
-        master_contacts = json.load(f)
-
-    if not master_contacts:
-        print("No contacts recorded in the admin file.")
-        return
-
-    print("Master Contact Log:")
-    for key, details in master_contacts.items():
-        added_by = details["added_by"]
-        print(f"- {key} | Added by: {added_by} | {details['contact_full_name']} ({details['contact_email']})")
+        print("The following contacts are online:")
+        for user in mutual_online:
+            details = contacts[user]
+            print(f"* {user}: {details['full_name']} ({details['email']})")
 
 def verify_contact(username):
     contacts_file = get_user_contacts_file(username)
@@ -106,7 +103,6 @@ def verify_contact(username):
     else:
         print(f"Contact '{contact_username}' not found in your contacts.")
 
-        
 def admin_list(admin_username):
     if admin_username.lower() != "admin":
         print("Access denied. Only admin can view this file.")
@@ -137,4 +133,3 @@ def admin_clear(admin_username):
     with open(MASTER_CONTACTS_FILE, "w") as f:
         json.dump({}, f, indent=4)
     print("Admin master contact log cleared.")
-
