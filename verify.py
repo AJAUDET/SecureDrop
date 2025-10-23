@@ -7,18 +7,31 @@ import sys
 import password
 import pwinput
 
-def verify(inp_usr, inp_pwd):
+def verify(user, pwd):
+    attempts = 3
     try:
         with open('passwd.json', 'r') as f:
             data = json.load(f)
-            if inp_usr in data["Users"]:
-                stored_hash = data["Users"][inp_usr]["Password"]
-                if password.verify_password(stored_hash, inp_pwd):
-                    print(f"Log in successful")
+            while attempts > 0:
+                if attempts == 3:
+                    inp_usr = user
+                    inp_pwd = pwd
                 else:
-                    print(f"Username or Password is incorrect")
-            else:
-                print(f"Username or Password is incorrect")
+                    inp_usr = input("Enter Username: ")
+                    inp_pwd = pwinput.pwinput("Enter Password: ")
+                if inp_usr in data["Users"]:
+                    stored_hash = data["Users"][inp_usr]["Password"]
+                    if password.verify_password(stored_hash, inp_pwd):
+                        print("Log in successful")
+                        return
+                    else:
+                        attempts -= 1
+                        print(f"Username or Password is incorrect. Attempts remaining: {attempts}")
+                else:
+                    attempts -= 1
+                    print(f"Username or Password is incorrect. Attempts remaining: {attempts}")
+            print("Too many failed attempts. Exiting.")
+            sys.exit(1)
     except FileNotFoundError:
         print("Authentication database not found")
         sys.exit(1)
@@ -29,17 +42,16 @@ def verify(inp_usr, inp_pwd):
         print("Authentication database missing required fields")
         sys.exit(1)
     except Exception as e:
-        print("Authentication error occurred")
+        print(f"Authentication error occurred: {e}")
         sys.exit(1)
-        
+
 if __name__ == "__main__":
-    if (len(sys.argv) != 2):
-        print(f"Usage:")
-        print(f"\tpython3 verify.py --verify")
+    if len(sys.argv) != 2:
+        print("Usage:")
+        print("\tpython3 verify.py --verify")
         sys.exit(1)
     mode = sys.argv[1]
-    
     if mode == "--verify":
         verify()
     else:
-        print(f"Improper Usage")
+        print("Improper Usage")

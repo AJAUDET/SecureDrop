@@ -17,7 +17,7 @@ command_map = {
 }
 
 def main():
-    print("Welcome to Secure Drop")
+    print("Welcome to Secure Drop, {user}".format(user=user))
     print("Enter 'help' for a list of commands, when done enter 'exit'")
     print("Enter a Command to start")
     cmd = ""
