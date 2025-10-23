@@ -39,5 +39,5 @@ if __name__ == '__main__':
         user.add_user()
     username = input("Enter Username: ")
     pwd = pwinput.pwinput(prompt="Enter your Password: ", mask='*')
-    verify.verify(username, pwd) 
+    username = verify.verify(username, pwd) 
     main(username)  

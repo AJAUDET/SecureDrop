@@ -23,7 +23,7 @@ def verify(user, pwd):
                     stored_hash = data["Users"][inp_usr]["Password"]
                     if password.verify_password(stored_hash, inp_pwd):
                         print("Log in successful")
-                        return
+                        return inp_usr
                     else:
                         attempts -= 1
                         print(f"Username or Password is incorrect. Attempts remaining: {attempts}")
