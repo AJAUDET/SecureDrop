@@ -1,0 +1,12 @@
+{
+  "jdoe": {
+    "FullName": "John Doe",
+    "Email": "john.doe@example.com",
+    "PublicKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7z5ZkZ3V..."
+  },
+  "jsmith": {
+    "FullName": "Jane Smith",
+    "Email": "jane.smith@example.com",
+    "PublicKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7z5ZkZ3V..."
+  }
+}
