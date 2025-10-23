@@ -1,19 +1,19 @@
 {
   "Users": {
     "Bob": {
-      "Password": "{\"salt\": \"ee2320ee398193c72500db8329370f26\", \"hash\": \"a6cfb8159ce0446aee6d6f33d739e5995020667c3a40d40fd982ec63013a9bbc\"}",
-      "Email": "bob@test.com",
-      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0lAGxYeoYrW2hxy6Qswf\nEt6v73sOoZXIPKYBWSvBlWWPIsm6ta4i+6x+JmQirwasc9bS9yZJ1kS9/awE6Mhl\nK5OOuJjIFvQggdNtVlRe1tx04CUhmMY7FqFLwPurVEcHfK7Cuocd/Zr9QCczUpjL\nSWZ+5KALseNK53OM0ajuFosSXH6u7loZkWsRLE0QzK2p4+QVlJLA5oEN41MZZLih\n8vNs9/yM9g7HWvxB3Mu8zKULu7q404hF/4YxqCZb3yIwe+dX6qEcOLaP68jsX2zM\nK47rAm4IcUXP37RRODeOJ7UIyKw8I+t0G5Y3ahb3EshhWk0817JGV8TRcoI4tBDt\nvQIDAQAB\n-----END PUBLIC KEY-----"
+      "Password": "{\"salt\": \"c6ee0cc82091413ab498b89d74bf1100\", \"hash\": \"3623ef7429cd4fe5722c0421e97b58b56b2042354006494edf74d2d2e7b501ca\"}",
+      "Email": "bob@testmail.com",
+      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA06OZLsU163IOQNYGQbSB\nuot9UJTM7jvG2s/ZZhwZgrNj2guNIArTxCn/Lpv04LFg3b4APdUfffoa6o4cU1Kq\nW/8XdZtBwmidLBirHbIG4wdzZTF5JcEltqXaV6eD70iLUgizFoVRu3vB/16e5NKv\nHfW6oK4nlvIPeaRTsoInd9cTfrh+SddbL3Ipr2CdPqozkk3phF91KCsewmx8SZYC\nyiQ/+OdP2usl1fwMJLoknAWNzt+A/PU2kYvHOomYSX48qIQvWDBVBv7/sFO6PSmf\nico4sVkcGRUxF0toDmjf1TwSiHD3O6F71RYj95t+Fi9LkQqfMb+1fqnYHy+ZRkT7\nSwIDAQAB\n-----END PUBLIC KEY-----"
     },
-    "bob": {
-      "Password": "{\"salt\": \"c5c787b28369302bfb7160271e0cd4d5\", \"hash\": \"7d92d8f3475ca338f58a3e27eb07c0a152298f3fe7b1b912c62405427786ccdd\"}",
-      "Email": "bob@test.cs",
-      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv+MDsEF5bgFJGiMvp4Yu\nKnwFZZ8+3Ui5rlZSu42GeZ2KLjFwKIKH2dmG3hyAYYFZ9f2f2BdxMLgCTJVKG2IC\nyvsJb5PhIRMuy+y7RUgXwSf9P5/c3+xOIDdMJlxKDHNOuPQdZhIVB4vxIL9VZ6RO\n2eO+qpHnuI/0oQjOCw3q2hBMB2CKbtunuTDTVxQv5W3ToupR77811/aUnvc+m0f3\nxqud/yyVLWGLd/g/2sqKlZSPvfDFGSLDZt6M+HS6YbmYG4CvVaoCQ+HDKyRLkAA1\nQV/pp9xxs9w74eoeEKGYkE/M6hL8RRWexNoxssJDODk3X+jYMoqnloBmi/pQQQwg\n8wIDAQAB\n-----END PUBLIC KEY-----"
+    "Bert": {
+      "Password": "{\"salt\": \"8d26330a2102eed5a0b386eaecbe0ac4\", \"hash\": \"d8c095104ff87e0f17ed2eee2b950662bf85114c90541a9a109633c98addaf94\"}",
+      "Email": "bert@testmail.com",
+      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAp33zGSUL/AOKNu6Rgj4g\nXHoW9lQBwQBPNFRaz5ou9Ln3X9mxhrFlAq+S3AOwnnATuozTLdsCREOOIu71ndFU\n9KpSjVUEpYhq2HTRu+HAgGCCTfmQ5mQiqyMzxOdqbH1ITh631hfj1ImDtGfOU9xY\nwVA9bZJEtsXYQIkzv2SBcMCPcIvJQWevNMy/uPahgiGcWnCrOvwyoI7JWMrAgaKw\nxlJIUNzv5J1wIEQRwVu43OSw+gMsYQebOHiEtYa9mCJeAMdCyMcdQzEhXL3KrVzs\nawgEXhaZD9ttmrTm0aC0UFO+MlODF6GpfShAKQ9A3FjeU7M/LmHQYVFfn+MhoVop\noQIDAQAB\n-----END PUBLIC KEY-----"
     },
-    "Lucas": {
-      "Password": "{\"salt\": \"6e7262045fab6d679b366d2ed34baed4\", \"hash\": \"94a07baddc6b65e6aa448fb597a180ad6cf2045eee1120c3fb9c50099cf29069\"}",
-      "Email": "lucas@test.cs",
-      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxHRA+Q62YT6BDLMR+SZ1\nk05j+qFGYLFryq0/F5uln4lmZc9xm5VTUW2HyS0WTzdBs0TZL1EZ5M6eKB7AzLCp\nExG0fHBXkfRCfl2EHnZHaAxrKIZrr9zHGGfYs2+1FUVkbk+qjjBezypafrNlX/PH\nwj4z6ihV/Ky09iAfoNdo0GJbV5YgKnF4kapAPCpLMMvWkbvLMOevehbMJLIxQtZz\nKvdsNWqqC1XMN2+2YX752DHDhZ+bezn3C9t60X753wbSYDzQinj7lzxN9kYCAHFO\nWG38nrl+Ll3IwFmvAjnR+b0ZhtcBcp6M5L6FB/Vmrnx9k+0zhUAmhQGbNjRtVpdj\nGwIDAQAB\n-----END PUBLIC KEY-----"
+    "Alice": {
+      "Password": "{\"salt\": \"d2ebf3e59b3e11f53a56caf0e6753bb2\", \"hash\": \"05e6b13b043824e696c7503a22bafbefcb7e5171b572917dfae576ca88d18833\"}",
+      "Email": "alice@testmail.com",
+      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlxDvJJ1O2gKQd1sGAzWh\n2laOcY03e3d4BO7hyMM/us6wu4KY0/psIY6IqoZp4hFi8bjBUI16Mi6pIDYbag3C\nP1f4Mv+v3WTEtJ9MAm/7Cze2LXmAlXurCigXfH8OZ6vswT5jTUGMAD4s4r2SkTYs\neTcRTbY2NHBmlyBf81uXh9kfBR+DqY3/IlY3vKSO5++mtmsGh57smFqb+/MfxIuH\nwnl4ZPNYaYJmuZqFof8fipo05hn0muPsR/yre/TqNJVlvhwNoardZbmzm6V8DIF4\nwEVkcQYLNwdxgbfkV/ue/JjsqJGcFE52MxsUtQCPhcHlFTLnPTk/4a02YOCCpOXQ\nlwIDAQAB\n-----END PUBLIC KEY-----"
     }
   }
 }
