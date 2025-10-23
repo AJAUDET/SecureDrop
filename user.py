@@ -9,9 +9,12 @@ from password import create_salted_hash
 from Crypto.PublicKey import RSA
 
 def add_user():
-    username = input("Enter a Username: ")
+    username = input("Enter your Username: ")
     email = input("Enter your Email: ")
-    pwd = pwinput.pwinput(prompt="Enter a Password: ", mask='*')
+    pwd = pwinput.pwinput(prompt="Enter your Password: ", mask='*')
+    pwd2 = pwinput.pwinput(prompt="Reenter your Password: ", mask='*')
+    if(pwd != pwd2):
+        print("Passwords do not match, try again\n")
     try:
         if os.path.exists('passwd.json'):
             with open('passwd.json', 'r') as outF:
@@ -50,6 +53,10 @@ def add_user():
             }
         with open('passwd.json', 'w') as outF:
             json.dump(data, outF, indent=2)
+
+        with open(f"{username}.pub", 'w') as outF:
+            data = public_key_str
+            print(f"{data}", file=outF)
 
         with open(f"{username}.priv", 'w') as outF:
             data = private_key_str
