@@ -1,0 +1,9 @@
+{
+  "Users": {
+    "Bob": {
+      "Password": "{\"salt\": \"ee2320ee398193c72500db8329370f26\", \"hash\": \"a6cfb8159ce0446aee6d6f33d739e5995020667c3a40d40fd982ec63013a9bbc\"}",
+      "Email": "bob@test.com",
+      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0lAGxYeoYrW2hxy6Qswf\nEt6v73sOoZXIPKYBWSvBlWWPIsm6ta4i+6x+JmQirwasc9bS9yZJ1kS9/awE6Mhl\nK5OOuJjIFvQggdNtVlRe1tx04CUhmMY7FqFLwPurVEcHfK7Cuocd/Zr9QCczUpjL\nSWZ+5KALseNK53OM0ajuFosSXH6u7loZkWsRLE0QzK2p4+QVlJLA5oEN41MZZLih\n8vNs9/yM9g7HWvxB3Mu8zKULu7q404hF/4YxqCZb3yIwe+dX6qEcOLaP68jsX2zM\nK47rAm4IcUXP37RRODeOJ7UIyKw8I+t0G5Y3ahb3EshhWk0817JGV8TRcoI4tBDt\nvQIDAQAB\n-----END PUBLIC KEY-----"
+    }
+  }
+}

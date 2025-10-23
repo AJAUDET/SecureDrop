@@ -1,5 +1,6 @@
 import user
 import verify
+import pwinput
 from commands import add, helpu, listc
 import sys
 
@@ -30,5 +31,7 @@ def main():
 if __name__ == '__main__':
     login = input("Would you like to register (y/n): ").strip()
     if (login.lower() == 'y'):  user.add_user()
-    verify.verify()
+    user = input("Enter Username: ")
+    pwd = pwinput.pwinput(prompt="Enter your Password: ", mask='*')
+    verify.verify(user, pwd)
     main()
