@@ -1,7 +1,7 @@
 import verify
 import pwinput
 import user
-from contactmanage import add_contact, list_contacts, verify_contact
+from contactmanage import add_contact, list_contacts, verify_contact, admin_list, admin_clear
 import sys
 
 
@@ -9,8 +9,11 @@ command_map = {
     "add": add_contact,
     "list": list_contacts,
     "verify": verify_contact,
+    "admin_list": admin_list,
+    "admin_clear": admin_clear,
     "exit": lambda username: sys.exit(0)
 }
+
 
 def main(username):
     print(f"Welcome to Secure Drop, {username}!")
@@ -24,6 +27,8 @@ def main(username):
             print("add - Add a new contact")
             print("list - List all contacts")
             print("verify - Verify a contact's identity")
+            print("admin_list - View all users’ contacts (admin only)")
+            print("admin_clear - Clear the master contact log (admin only)")
             print("exit - Exit SecureDrop")
         else:
             print("Unknown command. Type 'help' for a list of commands.")
