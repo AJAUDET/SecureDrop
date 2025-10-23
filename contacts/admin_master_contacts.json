@@ -1,0 +1,12 @@
+{
+    "bob:Peter": {
+        "added_by": "bob",
+        "contact_full_name": "Peter Pan",
+        "contact_email": "peterp@test.cs"
+    },
+    "Lucas:Bob": {
+        "added_by": "Lucas",
+        "contact_full_name": "Bob White",
+        "contact_email": "bobw@test.cs"
+    }
+}

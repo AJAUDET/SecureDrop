@@ -1,5 +1,6 @@
 import verify
 import pwinput
+import user
 from contactmanage import add_contact, list_contacts, verify_contact
 import sys
 
@@ -30,9 +31,7 @@ def main(username):
 if __name__ == '__main__':
     login = input("Would you like to register (y/n): ").strip()
     if login.lower() == 'y':
-        print("Registration is not implemented yet.") 
-        sys.exit(1)
-
+        user.add_user()
     username = input("Enter Username: ")
     pwd = pwinput.pwinput(prompt="Enter your Password: ", mask='*')
     verify.verify(username, pwd) 
