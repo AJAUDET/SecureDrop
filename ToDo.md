@@ -6,9 +6,9 @@
 # Milestone Implementation
   - Milestone 1: The basis for this is implemented with user.py
   - Milestone 2: The basis for this is implemented with verify.py
-  - Milestone 3: TODO
-  - Milestone 4: TODO
-  - Milestone 5: TOTO
+  - Milestone 3: contacts.py implements contact addition, verification, and listing
+  - Milestone 4: network.py implements tracking for users, who is online, and listing them as online to their contatcs
+  - Milestone 5: TODO
 
 # Ideas
   - Milestone 5: Proof Of Concept without network sockets firrst then adapt it
