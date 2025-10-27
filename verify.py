@@ -6,6 +6,7 @@ import json
 import sys
 import password
 import pwinput
+import welcome
 
 def verify(user, pwd):
     attempts = 3
@@ -22,7 +23,6 @@ def verify(user, pwd):
                 if inp_usr in data["Users"]:
                     stored_hash = data["Users"][inp_usr]["Password"]
                     if password.verify_password(stored_hash, inp_pwd):
-                        print("Log in successful")
                         return inp_usr
                     else:
                         attempts -= 1
