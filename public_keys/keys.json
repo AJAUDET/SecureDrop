@@ -1,0 +1,17 @@
+{
+  "Users": {
+    "admin": {
+      "Password": "{\"salt\": \"35d50674a56713a57aa1751bb2125244\", \"hash\": \"39e8227b26ab0bb412532282746c6c433f2f23f6e02892d690b91dbc64de52db\"}",
+      "Email": "admin@securedrop.cs",
+      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsDw4PSTFg+2f9b7B9ea3\nPV/DMnWAyEs6cRul7FEcG3ptIyyyts10gEO7ZIcJAkCY2tGpmrQNbUYWKD06s0jz\nEBgBkWH0vl6rdpbouQV1NyYD/wARMMjy8U/QvsD9RpI6V+NAqCcF46+x61PTQAzl\nZwGtvprEk2I5b1PMNwdxe9N8E3aKjCYpm/HumbLz6umiT74Ud+AQr3qp8O9LvpdE\n2ybGxV9r2XtaaWfJg/WTAXXfWLZL0mh/iNyj/KysxgMEfVOFEDl8eYWdFyR9JbeE\n8zTmKO8nBS71w2slrICBvaLxWli4xAFbNvMsoBZ26VLk9Qj5ZHgzQ8QbzoZI82si\nXwIDAQAB\n-----END PUBLIC KEY-----"
+    },
+    "Bob": {
+      "Password": "{\"salt\": \"b7d0b1b1c1835af160c6571f7f328553\", \"hash\": \"4d55d4ba7cf8f654d8449902af3be96c34e9c01ad74b24ace329f628c4f3afd6\"}",
+      "Email": "bob@testmail.com",
+      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtc6OPedkwXmbvxQl+2hR\njoxlEag9to2XTtaMlGNQhoclXNMFY9gcLA2MbjzgsXPUkUxKQdqMwm8qYndNhLKA\nDX1zmu72L+jluQV+a1G5Xi1MVTCz5bZRdNMuepfwCokxOOf/Oar8fTecWTGJC/7N\nJvplsZBtkjAUWztz3M6RvBKw347TZG/4WQbe+FfbSlDIEx47LaCjHveikgAhASPx\n79I+/9Nbzx2HM489iTL8bK40Gvfs2PiQEMd+RToUkiGB9s9xt7Xbe7e7qiP8uu22\njNEuV37VMLYBStw0PMALlFY3M0d1EEIOKOpqIQ6+df8msNMfalWl8QRO6mMGHP5m\nDwIDAQAB\n-----END PUBLIC KEY-----"
+    },
+    "Bert": {
+      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3YVe2/l0Yq5j1pq366SF\nbCYSEx2CLG2+xYHIzhCxzRFgeYsEzkfkSnyVrntXakYpCXIdDt9EngoIktCqW8Lp\niz/S6GF0i1RNN2iDGCaKlfHaycLLlGiL6Jcj9D6iX46Yrbh+IYX3T4U6QI2JvMtL\n2MPQqooLvHEn/NDxF/DjlOgNIldeb3Ip6wjn9kUhiTI2PgWupSVixeWO2EvXsSKk\nAF0TPPHIi4/9G7PKIA1S8hstfwWnfc33SGtk2hEQhxIORrE+79Q2JE0oiT98i1UH\n4ecgG3+jqECE5BBaw1oleefltPJQr5/H7Vc/wN15rtb39CifLrr3UnjO8PnMBLUs\nDQIDAQAB\n-----END PUBLIC KEY-----"
+    }
+  }
+}
