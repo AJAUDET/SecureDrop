@@ -1,17 +1,2 @@
 {
-    "Bob:Bert": {
-        "added_by": "Bob",
-        "contact_full_name": "Bert Reynos",
-        "contact_email": "bert@testmail.com"
-    },
-    "Bert:Bob": {
-        "added_by": "Bert",
-        "contact_full_name": "Bob Reynos",
-        "contact_email": "bob@testmail.com"
-    },
-    "Alice:Bert": {
-        "added_by": "Alice",
-        "contact_full_name": "Bert Reynos",
-        "contact_email": "bert@testmail.com"
-    }
 }
