@@ -61,12 +61,18 @@ def add_user():
             }
         with open('passwd.json', 'w') as outF:
             json.dump(data, outF, indent=2)
-            
-        with open(os.path.join(PUB_DIR, 'keys.json'), 'w') as outF:
-            data["Users"][username] = {
-                "Public Key": public_key_str
-            }
-            json.dump(data, outF, indent=2)
+
+        keys_path = os.path.join(PUB_DIR, 'keys.json')
+        if os.path.exists(keys_path):
+            with open(keys_path, 'r') as inF:
+                pub_keys_data = json.load(inF)
+        else:
+            pub_keys_data = {"Users": {}}
+        pub_keys_data["Users"][username] = {
+            "Public Key": public_key_str
+        }
+        with open(keys_path, 'w') as outF:
+            json.dump(pub_keys_data, outF, indent=2)
 
         with open(os.path.join(PUB_DIR, f"{username}.pub"), 'w') as outF:
             data = public_key_str
