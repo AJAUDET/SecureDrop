@@ -8,6 +8,14 @@ import pwinput
 from password import create_salted_hash
 from Crypto.PublicKey import RSA
 
+PUB_DIR = "public_keys"
+PRIV_DIR = "private_keys"
+
+if not os.path.exists(PUB_DIR):
+    os.makedirs(PUB_DIR)
+if not os.path.exists(PRIV_DIR):
+    os.makedirs(PRIV_DIR)
+
 def add_user():
     username = input("Enter your Username: ")
     email = input("Enter your Email: ")
@@ -53,12 +61,18 @@ def add_user():
             }
         with open('passwd.json', 'w') as outF:
             json.dump(data, outF, indent=2)
+            
+        with open(os.path.join(PUB_DIR, 'keys.json'), 'w') as outF:
+            data["Users"][username] = {
+                "Public Key": public_key_str
+            }
+            json.dump(data, outF, indent=2)
 
-        with open(f"{username}.pub", 'w') as outF:
+        with open(os.path.join(PUB_DIR, f"{username}.pub"), 'w') as outF:
             data = public_key_str
             print(f"{data}", file=outF)
 
-        with open(f"{username}.priv", 'w') as outF:
+        with open(os.path.join(PRIV_DIR, f"{username}.priv"), 'w') as outF:
             data = private_key_str
             print(f"{data}", file=outF)
 
