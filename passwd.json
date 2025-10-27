@@ -14,6 +14,26 @@
       "Password": "{\"salt\": \"fcc5c99bed02fbd0febaada9115b0fe8\", \"hash\": \"7f90b61ad8aa8eb82708ac715795090f62765e86e67afaee8638d4382dc705f4\"}",
       "Email": "bert@testmail.com",
       "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3YVe2/l0Yq5j1pq366SF\nbCYSEx2CLG2+xYHIzhCxzRFgeYsEzkfkSnyVrntXakYpCXIdDt9EngoIktCqW8Lp\niz/S6GF0i1RNN2iDGCaKlfHaycLLlGiL6Jcj9D6iX46Yrbh+IYX3T4U6QI2JvMtL\n2MPQqooLvHEn/NDxF/DjlOgNIldeb3Ip6wjn9kUhiTI2PgWupSVixeWO2EvXsSKk\nAF0TPPHIi4/9G7PKIA1S8hstfwWnfc33SGtk2hEQhxIORrE+79Q2JE0oiT98i1UH\n4ecgG3+jqECE5BBaw1oleefltPJQr5/H7Vc/wN15rtb39CifLrr3UnjO8PnMBLUs\nDQIDAQAB\n-----END PUBLIC KEY-----"
+    },
+    "Alice": {
+      "Password": "{\"salt\": \"2388b4150bd92fe5af0402630a63bb5b\", \"hash\": \"57c673a00412285bc50d15d4193c1bd8d45031f81121ec3e81fc408a191669c1\"}",
+      "Email": "alice@wonderland.com",
+      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApX5A4C2kk5Q6mNbCDxTx\nA6//KnXyjGACdTuCFu/t2Nkz4pLxbe7DTZy1VkqHAPELMFdEss1BwOWjMg5d35US\nYk03yVgtOnxoe2q5x25fuGcIcEhHCsvxz6iQvFJYcTdvt2ILoytU8EnQUy758Iye\njoq3fkFVU2ZVogThOWqonSgrDqDgayAZ6Afr6IFvYwHFKt6pTvUCokF/DUzZ5TaO\nUmzZfYCp2MfPzjPNpq9NvlsnIMAFhk+L4oEGAZqIwYrHCO1Tynq1DN/mJWQcr8ml\njR5dCIXiYHxRooRm5s4Larofc8y7PeYr8fyVyucKhPOKj2GGgXJwrYPRLSIUV/2f\ngwIDAQAB\n-----END PUBLIC KEY-----"
+    },
+    "Gemini": {
+      "Password": "{\"salt\": \"7499772c6b6f7abde1008fcf48beb4e2\", \"hash\": \"b5b25106f072d36df42aafc65dc2140dc633a613d72e4cc32d5a79798df96139\"}",
+      "Email": "twin1@test.com",
+      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6ctFJrh0FL5du36RQhlO\npWgZQmL0Aby8HGMU4UvsmiJbZGDi/0rkYxRL0InwQ89Tseg8ak+j0J1KrKj7+qhj\nZbbFHTSeT1rJ0MJ6NzRQveO5o7EjRL8Hb1vumFh81LQfvUVSFm9gwHAXrcbT/a3d\n5cQgcPRJp14AOSm+yawjQGFjSVckndT0JIAYHWY1vHLZFdJbhIq29om7D6CKMPA7\nm/su86KW0cQVZvebEmidQxUxMDovs3TRs0Wkn53ebNxAPKrBdxEyVWob1YKHwG5v\nYOMyuLiHYYXmeRvbHcGC1iLyJUyzQbq+D1T7NIx6aBCncoKyUr4eWnls7I2UiBrO\ngQIDAQAB\n-----END PUBLIC KEY-----"
+    },
+    "Geminii": {
+      "Password": "{\"salt\": \"f7cffb8dce3f125477b9925b8a1efb05\", \"hash\": \"dcb14b4546410ffdd8e8a48232a53c66099447d2a2bcabfc5c9130d8dc039239\"}",
+      "Email": "twin2@testmail.com",
+      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuAn7l+2hNWqvJ7S8z1AX\n+wFfU1KLfLoFgXIJUyIaQe0vcms4XqmDpy5e6b+tyR16owdtkL1bXBWpYsRuQnrk\nLuQo8t/cKbQZQoQKYVPXlGD89caHFClPqvh80As12tQX58pjjmj/enjeMZkVSKl9\ncCA8EtZflGR7uq0Frw0yptm6XxMYCj6JXUzez65tsXdkpJBA0frTgEBFOLfRLRie\n4jqqlskC+9rtJ0y1zNYzcvWCEwDy+fx64xmo5cXvYIdG9AoBVC+BtPs7lWRk3+/K\na7IIY8HDV8WKdsvV4ftpouwLQ7G5up/gecEmfBqcT3yFm6rJIjZvJ9QI1Jco8+5X\nzQIDAQAB\n-----END PUBLIC KEY-----"
+    },
+    "HooH": {
+      "Password": "{\"salt\": \"f12c1501976ac65d3c3ecc4722ef2dfd\", \"hash\": \"fa3b3e75b5be7078cf8fb979d6a1d42960b6da8dd8a54f52c0ea3edc3f5b8671\"}",
+      "Email": "HooH@aeons.com",
+      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgYtFI83Io7bW4FjrXqOY\nVytOyW+HV1Kr3cVWvRiYtSS7FwBrL/Cuuke23l761UcySqBWi2SXUJcfXbdAVTLZ\nUy0LzcN+XxhzR3QApYWoTyaaNu1FuojIgHMOwB8QfzdLA6uGsNqqO5V1aFqmI61+\nszHVHmIR5SJ9EOdX152qvdBfP6ui7BR3DzsXIkWnizA08TXfwFGvtTKydJlGbJYs\neVjBARB9LdtNDtut/QPl8OB7FHusYIu7E7lPpvuPGfnzr8HqJOgPrqTqeLteLWI3\nAt+URMhR5b/fc6/Yp+5KAjftRxhpuSctk+eZeCyzsW2gQHTM4hYIg6tFBl0IoyoO\n3QIDAQAB\n-----END PUBLIC KEY-----"
     }
   }
 }
