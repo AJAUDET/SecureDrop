@@ -4,6 +4,7 @@ import user
 import os
 from contactmanage import add_contact, list_contacts, verify_contact, admin_list, admin_clear
 from network import start_network
+from welcome import welcome_msg
 import sys
 
 command_map = {
@@ -17,8 +18,6 @@ command_map = {
 }
 
 def main(username):
-    print(f"Welcome to Secure Drop, {username}!")
-    print("Enter 'help' for a list of commands, when done enter 'exit'")
     while True:
         cmd = input(f"{username}: ").strip()
         if cmd in command_map:
@@ -45,5 +44,7 @@ if __name__ == '__main__':
     verify.verify(username, pwd)
 
     start_network(username)  #startbroadcast/listen for users
+   
+    welcome_msg(username)           # welcome users
     
     main(username)
