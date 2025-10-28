@@ -19,7 +19,7 @@ command_map = {
 
 def main(username):
     while True:
-        cmd = input(f"{username}: ").strip()
+        cmd = input(f"{username}@securedrop.com: ").strip()
         if cmd in command_map:
             command_map[cmd](username)  
         elif cmd == "help":
@@ -39,7 +39,7 @@ if __name__ == '__main__':
     login = input("Would you like to register (y/n): ").strip()
     if login.lower() == 'y':
         user.add_user()
-    username = input("Enter Username: ").strip()
+    username = input("Enter your Username: ").strip()
     pwd = pwinput.pwinput(prompt="Enter your Password: ", mask='*')
     verify.verify(username, pwd)
 
