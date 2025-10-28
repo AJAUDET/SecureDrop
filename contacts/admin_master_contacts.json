@@ -8,5 +8,10 @@
         "added_by": "Alice",
         "contact_full_name": "HooH Aeon",
         "contact_email": "HooH@aeons.com"
+    },
+    "michael:bob": {
+        "added_by": "michael",
+        "contact_full_name": "bob white",
+        "contact_email": "bob@test.cs"
     }
 }

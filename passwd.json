@@ -34,6 +34,11 @@
       "Password": "{\"salt\": \"f12c1501976ac65d3c3ecc4722ef2dfd\", \"hash\": \"fa3b3e75b5be7078cf8fb979d6a1d42960b6da8dd8a54f52c0ea3edc3f5b8671\"}",
       "Email": "HooH@aeons.com",
       "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgYtFI83Io7bW4FjrXqOY\nVytOyW+HV1Kr3cVWvRiYtSS7FwBrL/Cuuke23l761UcySqBWi2SXUJcfXbdAVTLZ\nUy0LzcN+XxhzR3QApYWoTyaaNu1FuojIgHMOwB8QfzdLA6uGsNqqO5V1aFqmI61+\nszHVHmIR5SJ9EOdX152qvdBfP6ui7BR3DzsXIkWnizA08TXfwFGvtTKydJlGbJYs\neVjBARB9LdtNDtut/QPl8OB7FHusYIu7E7lPpvuPGfnzr8HqJOgPrqTqeLteLWI3\nAt+URMhR5b/fc6/Yp+5KAjftRxhpuSctk+eZeCyzsW2gQHTM4hYIg6tFBl0IoyoO\n3QIDAQAB\n-----END PUBLIC KEY-----"
+    },
+    "michael": {
+      "Password": "{\"salt\": \"05104aabfe2be19d186462cf776c9119\", \"hash\": \"2ba02bfeee0df6d285ea1eee09bec0350a586ff5ff03f96385ba3cc7a5612328\"}",
+      "Email": "michael@test.cs",
+      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqKZJx9fFH+/utc6nel/N\ndsp+8sGsCEvojK8vu+LoqudWGHWjQfIlKnyr7AqEEqEk74d70zKu2mFaTjFmRuTZ\nnhRUQ4Kf1TfpDcq7BcwicC4fhZSyd+MISCCwzm0zTtfHOwWFMf49WVf6CVRWkv1A\nWvgwrw7SuP8nWHxBZrk3KRnPGvDRGhm+chUVkP809iK2cIBntkvHgKZ6pofNFhju\n0tbdVr4HBtzY1zI+iRnTM9HbjES3Rc4BarRdEEr0amlovRhKCUVvF443uo1Sl3QA\neX0aVtX5JdglrqXAHtGLBMb6RPijiIRHxdf65twIy0d5p9EMB/zKtWX9YfxWNRaj\n6QIDAQAB\n-----END PUBLIC KEY-----"
     }
   }
 }
