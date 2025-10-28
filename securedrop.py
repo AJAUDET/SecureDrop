@@ -43,7 +43,7 @@ if __name__ == '__main__':
     pwd = pwinput.pwinput(prompt="Enter your Password: ", mask='*')
     verify.verify(username, pwd)
 
-    start_network(username)  #startbroadcast/listen for users
+    start_network(username)         # start broadcast/listen for users
    
     welcome_msg(username)           # welcome users
     
