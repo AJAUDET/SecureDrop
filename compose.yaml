@@ -9,48 +9,47 @@
 # https://github.com/docker/awesome-compose
 version: "3.9"
 
-# Shared network for all containers
-networks:
-  securedrop-net:
-    driver: bridge
-
-# Persistent data storage
-volumes:
-  backend-data:
-
 services:
-  # =========================================================
-  # Backend service - shared among all users
-  # =========================================================
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
     container_name: securedrop-backend
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
     restart: always
     environment:
-      - PORT=8000
-      - DATABASE_URL=/data/db.sqlite3
-    volumes:
-      - backend-data:/data
+      - POSTGRES_USER=securedrop
+      - POSTGRES_PASSWORD=securedrop
+      - POSTGRES_DB=securedrop
     ports:
-      - "8000:8000"
+      - "5432:5432"   # database
+      - "8080:8080"   # optional API or internal backend port
+    volumes:
+      - backend_data:/var/lib/postgresql/data
     networks:
-      - securedrop-net
-
-  # =========================================================
-  # Template for a single user SecureDrop container
-  # =========================================================
+      - securedrop_net
   user-template:
     build:
       context: .
-      dockerfile: Dockerfile
-    restart: always
-    depends_on:
-      - backend
+      dockerfile: user/Dockerfile
     environment:
-      - BACKEND_URL=http://backend:8000
       - USER_ID=${USER_ID}
       - USER_NAME=${USER_NAME}
+      - BACKEND_URL=http://securedrop-backend:8080
+    depends_on:
+      - backend
     networks:
-      - securedrop-net
+      - securedrop_net
+    volumes:
+      - ./contacts:/app/contacts
+      - ./private_keys:/app/private_keys
+      - ./public_keys:/app/public_keys
+      - ./uploads:/app/uploads
+    deploy:
+      replicas: 0  # No default containers — created dynamically via Python script
+
+networks:
+  securedrop_net:
+    driver: bridge
+
+volumes:
+  backend_data:
