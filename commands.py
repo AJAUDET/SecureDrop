@@ -1,5 +1,5 @@
 from verify import verify
-import contacts 
+import contacts as contacts 
 
 def add():
     contacts.add_contact()

@@ -1,6 +1,6 @@
-import verify
+import verify as verify
 import pwinput
-import user
+import user as user
 import os
 from contactmanage import add_contact, list_contacts, verify_contact, admin_list, admin_clear
 from network import start_network

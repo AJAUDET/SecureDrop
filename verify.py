@@ -4,9 +4,9 @@
 
 import json
 import sys
-import password
+import password as password
 import pwinput
-import welcome
+import welcome as welcome
 
 def verify(user, pwd):
     attempts = 3
