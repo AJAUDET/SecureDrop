@@ -13,5 +13,15 @@
         "added_by": "michael",
         "contact_full_name": "bob white",
         "contact_email": "bob@test.cs"
+    },
+    "HooH:Mythus": {
+        "added_by": "HooH",
+        "contact_full_name": "Mythus the Enigmata",
+        "contact_email": "enigmata@author.com"
+    },
+    "Mythus:HooH": {
+        "added_by": "Mythus",
+        "contact_full_name": "HooH the Equilibrium",
+        "contact_email": "HooH@aeons.com"
     }
 }
