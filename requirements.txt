@@ -2,3 +2,4 @@ pycryptodome
 pwinput
 pytz
 tqdm
+pyyaml
