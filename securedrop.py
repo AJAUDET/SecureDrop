@@ -1,5 +1,5 @@
 import verify as verify
-import pwinput as pwinput
+import pwinput
 import user as user
 import os
 from contactmanage import add_contact, list_contacts, verify_contact, admin_list, admin_clear
