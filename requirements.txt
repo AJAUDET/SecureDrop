@@ -2,7 +2,7 @@ pycryptodome
 pwinput
 pytz
 tqdm
-PyYaml
+PyYAML
 pathlib
 cryptography
 requests
