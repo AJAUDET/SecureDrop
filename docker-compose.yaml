@@ -8,8 +8,7 @@ services:
       dockerfile: Dockerfile
     command: python3 securedrop.py
     volumes:
-      - .:/app
-    stdin_open: true
+      - host_data:/host_data
     tty: true
     restart: always
     networks:
@@ -22,12 +21,16 @@ services:
       dockerfile: Dockerfile
     command: python3 securedrop.py
     volumes:
-      - .:/app
+      - receiver_data:/receiver_data
     stdin_open: true
     tty: true
     restart: always
     networks:
       - securedrop_lan
+
+volumes:
+  host_data: {}
+  receiver_data: {}
 
 networks:
   securedrop_lan:
