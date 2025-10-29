@@ -1,0 +1,18 @@
+# Use a Python base image
+FROM python:3.11-slim
+
+# Set working directory
+WORKDIR /app
+
+# Copy project files
+COPY . /app
+
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Expose a port if needed (depends on how the app serves/networking)
+# e.g., if there’s a network or socket interface on port 5000:
+EXPOSE 5000
+
+# Set default command
+CMD ["python", "securedrop.py"]
