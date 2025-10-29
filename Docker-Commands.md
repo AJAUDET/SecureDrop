@@ -1,6 +1,6 @@
 # Setup
   - Install Docker Decktop: https://www.docker.com/products/docker-desktop
-  - Install git if not installed: <package manager> install git
+  - Install git if not installed: your_package_manager install git
   - Clone the GitHub repository to your local system: git clone https://github.com/AJAUDET/SecureDrop
 
   - Create Local Docker Containers: docker-compose up -d 
