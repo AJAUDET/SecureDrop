@@ -20,3 +20,6 @@
   - We are operating under the idea that user's cannot see eachother's friend list
   - An attacker can see everything except for the private key files
   - Since the Contact/Friend files are local we need to find a way to have users check if they are added on eachother's lists
+  - Networks are only broadcasted locally, not through a different instance of the codespace
+    - We are going to be implementing Docker Containers to do this
+      - I will probs ask him to help me set one up when I next see him -- AJ
