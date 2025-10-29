@@ -4,3 +4,5 @@ pytz
 tqdm
 PyYaml
 pathlib
+cryptography
+requests
