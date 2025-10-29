@@ -7,15 +7,13 @@ services:
       context: .
       dockerfile: Dockerfile
     command: python3 securedrop.py
-    ports:
-      - "8080:80"
     volumes:
-      - .:/app               # lets you edit files live
-    stdin_open: true         # allows attaching an interactive shell
-    tty: true                # keeps a TTY open
+      - .:/app
+    stdin_open: true
+    tty: true
     restart: always
     networks:
-      - securedrop_securenet
+      - securedrop_lan
 
   receiver:
     container_name: receiver
@@ -23,19 +21,21 @@ services:
       context: .
       dockerfile: Dockerfile
     command: python3 securedrop.py
-    ports:
-      - "8081:80"
     volumes:
       - .:/app
     stdin_open: true
     tty: true
     restart: always
     networks:
-      - securedrop_securenet
+      - securedrop_lan
 
 networks:
-  securedrop_securenet:
+  securedrop_lan:
+    driver: macvlan
+    driver_opts:
+      parent: eth0
     ipam:
-      driver: default
       config:
-        - subnet: 192.168.123.0/24
+        - subnet: 192.168.1.0/24
+          ip_range: 192.168.1.200/29
+          gateway: 192.168.1.1
