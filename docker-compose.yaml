@@ -1,23 +1,37 @@
 version: "3.9"
 
 services:
-  securedrop_user:
-    container_name: "securedrop_user"
-    image: securedrop-docker_user_container:latest
+  host:
+    container_name: host_container
     build:
       context: .
       dockerfile: Dockerfile
-    environment:
-      - USER_NAME=${USER_NAME}
-      - USER_PASSWORD=${USER_PASSWORD}
+    command: python3 securedrop.py
     volumes:
-      - securedrop_auth:/app/auth       # Shared authentication database
-      - securedrop_data:/app/data       # Shared data root (per-user directories)
+      - securedrop_auth:/app/auth
+      - securedrop_data:/app/data
     stdin_open: true
     tty: true
-    restart: unless-stopped
+    restart: always
     networks:
-      - securedrop_lan
+      securedrop_lan:
+        ipv4_address: 192.168.1.201  # Unique IP for this container
+
+  receiver:
+    container_name: receiver_container
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python3 securedrop.py
+    volumes:
+      - securedrop_auth:/app/auth
+      - securedrop_data:/app/data
+    stdin_open: true
+    tty: true
+    restart: always
+    networks:
+      securedrop_lan:
+        ipv4_address: 192.168.1.202  # Unique IP for this container
 
 volumes:
   securedrop_auth:
@@ -29,9 +43,9 @@ networks:
   securedrop_lan:
     driver: macvlan
     driver_opts:
-      parent: eth0
+      parent: eth0                  # Replace with your actual host interface
     ipam:
       config:
-        - subnet: 192.168.1.0/24
-          ip_range: 192.168.1.200/29
+        - subnet: 192.168.1.0/24      # Your LAN subnet
+          ip_range: 192.168.1.200/29  # Small range for containers
           gateway: 192.168.1.1
