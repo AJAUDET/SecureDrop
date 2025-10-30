@@ -1,0 +1,9 @@
+{
+  "Users": {
+    "Alice": {
+      "Password": "{\"salt\": \"c36c48f33d7abad3517e02ac7b88ca3e\", \"hash\": \"c5bdf4fa83b003a4fd70566d8fc9c554cab6b4dec05c6f0dcd030dff80d4745c\"}",
+      "Email": "alice@wonderland.com",
+      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0uWmB1q0A6NCLuL7Z/XY\nEEwmndnVA9XX3zyBtlijwBMTzEL4isQj2c/bi92ZmoMuQIC2GZVpRas/A0zITNHt\nkzQ+eudVDc1MTopU2Gt6K2YlVfI4KB2BJ9xMhWL60N2kBbEx5BTMshyh2s7PElMd\nPN5GRw8HaLi/zvAzSBVfWyH71V8/9EY7iKYDVy34xGAvvPrxN7cnF/+v16hkpnuY\nJsePKQdevkkIzRdoptAjEG9voFaML3x9edABGTB+xUufgZ5QkNRTElLMWV8GL5uZ\noBmcOh2SQWddZz2kfBHCxQvudZn8Oi2M8n9O+9kK1aPR8GhuwfGYLfUnN+8o6BBB\njwIDAQAB\n-----END PUBLIC KEY-----"
+    }
+  }
+}

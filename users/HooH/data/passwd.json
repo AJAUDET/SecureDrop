@@ -1,0 +1,9 @@
+{
+  "Users": {
+    "HooH": {
+      "Password": "{\"salt\": \"ef3e6cc9e1ddf7e74a786642d7152be4\", \"hash\": \"791f07aed9b0b97b05fc19c36196e70daec432f110f614a3cd549547b1c4107e\"}",
+      "Email": "HooH@equlibrium.com",
+      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwOzIyssQa8n2o2u7T17w\natAb2VxlysZ6LHjg9PRo2pdrK2TkkdDN8RFta75Xm5WHyWkrmATJKhZGJpDAm9As\nXxVXForMkWBXulhfhKYz35GiUVKffRIrwvF/LIL2+/wpJRFpJgDJT9MiQWlKGU7a\nkQWLYBKcWA46o6p2OVu0Z1oMKlTAwlKFSl9eKmDBX4ZLr014J8WJQ9NpSQ0BdVsg\nIYkoFvCPUn7ntZsmy24roAQYbWS2ZLdsXx/ShKnfCyZYhvKsmr5sDiEdM2zg1G+C\nGIuO5JQTL9G9T3/X4esol1ZQhS7yQLgICPPc34L+fo6C9+4WGCf+8v9US/9xUj+Q\nBwIDAQAB\n-----END PUBLIC KEY-----"
+    }
+  }
+}
