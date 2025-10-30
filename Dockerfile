@@ -13,6 +13,7 @@ RUN apt-get update && \
         libffi-dev \
         python3-dev \
         git \
+        nano \
         curl && \
     rm -rf /var/lib/apt/lists/*
 
