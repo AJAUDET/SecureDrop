@@ -1,26 +1,15 @@
-# Use a lightweight Python base image
-FROM python:3.11-slim
+FROM python:3.12-slim
 
-# Prevent Python from writing .pyc files and buffering output
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-
-# Set working directory
 WORKDIR /app
 
-# Install system dependencies (bash, nano, etc.) for debugging or development
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    bash curl vim nano net-tools iputils-ping \
-    && rm -rf /var/lib/apt/lists/*
+# Copy application code only
+COPY securedrop.py user.py verify.py contactmanage.py password.py network.py welcome.py /app/
 
-# Copy only requirements first to leverage Docker layer caching
-COPY requirements.txt .
+# Ensure /app/data exists for per-user volumes
+RUN mkdir -p /app/data
 
-# Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Install required packages
+RUN pip install pycryptodome pwinput
 
-# Now copy the rest of the application
-COPY . .
-
-# Default command
-CMD ["python3", "securedrop.py"]
+# Default entrypoint
+ENTRYPOINT ["python3", "securedrop.py"]

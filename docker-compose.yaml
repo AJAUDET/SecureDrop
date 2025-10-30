@@ -1,36 +1,20 @@
 version: "3.9"
 
 services:
-  host:
-    container_name: host
+  user_container:
+    container_name: "user_container"   # will be overridden in launch script
     build:
       context: .
       dockerfile: Dockerfile
-    command: python3 securedrop.py
-    volumes:
-      - host_data:/host_data
-    tty: true
-    restart: always
-    networks:
-      - securedrop_lan
-
-  receiver:
-    container_name: receiver
-    build:
-      context: .
-      dockerfile: Dockerfile
-    command: python3 securedrop.py
-    volumes:
-      - receiver_data:/receiver_data
+    environment:
+      - USER_NAME
+      - USER_EMAIL
+      - USER_PASSWORD
     stdin_open: true
     tty: true
     restart: always
     networks:
       - securedrop_lan
-
-volumes:
-  host_data: {}
-  receiver_data: {}
 
 networks:
   securedrop_lan:
