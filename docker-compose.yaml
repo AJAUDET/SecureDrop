@@ -1,12 +1,10 @@
-version: "3.9"
-
 services:
   host:
     container_name: host_container
     build:
       context: .
       dockerfile: Dockerfile
-    command: python3 securedrop.py
+    command: python3 securedrop.py host
     volumes:
       - securedrop_auth:/app/auth
       - securedrop_data:/app/data
@@ -21,7 +19,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: python3 securedrop.py
+    command: python3 securedrop.py receiver
     volumes:
       - securedrop_auth:/app/auth
       - securedrop_data:/app/data
@@ -33,9 +31,7 @@ services:
 
 volumes:
   securedrop_auth:
-    name: securedrop_auth
   securedrop_data:
-    name: securedrop_data
 
 networks:
   securedrop_bridge:
