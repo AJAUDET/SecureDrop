@@ -1,0 +1,9 @@
+{
+  "Users": {
+    "Nous": {
+      "Password": "{\"salt\": \"457bcad2223ae975dffeea82b03a4052\", \"hash\": \"4d599941cac32f82bbf9dada88cbaf990507ca900bbb6b8b2fd1d7b56d83635b\"}",
+      "Email": "",
+      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxdtc8cFOXhW57Uw5/Fxv\nwi7pCOXXCvxpUNbWG/RM7P6GCwp8hhEKPCTYrjrZZtEmPzgWJmEkAQEe8oUbrTPv\nYl50hJuJrinqf3nMYUnTArVIc9LAL06dSCQfGUsAc8LYtdqmyU2XoPXbkB7JFp1y\nMK/nHNx7Zj8I+ub654XKSWcB7HAT9jixiulRVvr0gKk6xFlJ7j92eQEttPX4sWsm\nWSoQnOO5a0XyXO8OmNPMhFwyTPR81ze6UJR8nTpHDZiGjqZnJ4OpIev8TqFT6d42\nMsB2bcTONwO6z8qGgyWJoemomL15V/LT3L0/FguX3tTi8N0jr7fXtwzS2zhcEzhe\nqQIDAQAB\n-----END PUBLIC KEY-----"
+    }
+  }
+}

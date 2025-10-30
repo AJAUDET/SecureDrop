@@ -6,8 +6,8 @@ services:
       dockerfile: Dockerfile
     command: python3 securedrop.py host
     volumes:
-      - securedrop_auth:/app/auth
-      - securedrop_data:/app/data
+      - ./auth:/app/auth        # bind mount to host folder ./auth
+      - ./data:/app/data        # bind mount to host folder ./data
     stdin_open: true
     tty: true
     restart: always
@@ -21,17 +21,13 @@ services:
       dockerfile: Dockerfile
     command: python3 securedrop.py receiver
     volumes:
-      - securedrop_auth:/app/auth
-      - securedrop_data:/app/data
+      - ./auth:/app/auth
+      - ./data:/app/data
     stdin_open: true
     tty: true
     restart: always
     networks:
       - securedrop_bridge
-
-volumes:
-  securedrop_auth:
-  securedrop_data:
 
 networks:
   securedrop_bridge:
