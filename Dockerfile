@@ -14,6 +14,7 @@ RUN apt-get update && \
         python3-dev \
         git \
         nano \
+        ping \
         curl && \
     rm -rf /var/lib/apt/lists/*
 
