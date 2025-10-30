@@ -1,61 +1,58 @@
 #!/bin/bash
+# launch_user.sh — Launch SecureDrop container for a specific user
 
+set -e
+
+# --- CONFIG ---
+IMAGE_NAME="securedrop-docker_user_container"
 NETWORK_NAME="securedrop_lan"
+BASE_DATA_DIR="$(pwd)/data"   # all user data lives here
 
-# Check if network exists
-if ! docker network inspect $NETWORK_NAME >/dev/null 2>&1; then
-  echo "Creating network $NETWORK_NAME"
-  docker network create -d macvlan \
-    --subnet=192.168.1.0/24 \
-    --gateway=192.168.1.1 \
-    -o parent=eth0 \
-    $NETWORK_NAME
-fi
-
-# Usage: ./launch_user.sh <username> <email> <password>
-if [ $# -ne 3 ]; then
-  echo "Usage: $0 <username> <email> <password>"
+# --- ARGUMENT CHECK ---
+if [ -z "$1" ]; then
+  echo "Usage: $0 <username>"
   exit 1
 fi
 
-USER=$1
-EMAIL=$2
-PASSWORD=$3
-VOLUME="${USER}_data"
-CONTAINER_NAME="${USER}_container"
-IMAGE_NAME="securedrop_user_container:latest"
-
-# -------------------------------
-# 1. Build the Docker image if it doesn't exist
-if ! docker image inspect $IMAGE_NAME >/dev/null 2>&1; then
-  echo "Building Docker image: $IMAGE_NAME"
-  docker-compose build
+# --- ENSURE IMAGE EXISTS ---
+if ! docker image inspect "$IMAGE_NAME" >/dev/null 2>&1; then
+  echo "[+] Image '$IMAGE_NAME' not found. Building it now..."
+  docker build -t "$IMAGE_NAME" .
 fi
 
-# -------------------------------
-# 2. Create a Docker volume for the user if missing
-if ! docker volume inspect $VOLUME >/dev/null 2>&1; then
-  echo "Creating Docker volume: $VOLUME"
-  docker volume create $VOLUME
+USER_NAME="$1"
+USER_VOLUME="${BASE_DATA_DIR}/${USER_NAME}"
+
+# --- CREATE USER DATA STRUCTURE ---
+echo "[+] Setting up data directories for user: $USER_NAME"
+mkdir -p "${USER_VOLUME}/contacts"
+mkdir -p "${USER_VOLUME}/public_keys"
+mkdir -p "${USER_VOLUME}/private_keys"
+mkdir -p "${USER_VOLUME}/messages"
+
+echo "[+] User data directory prepared at ${USER_VOLUME}"
+
+# --- CHECK NETWORK ---
+if ! docker network inspect "$NETWORK_NAME" >/dev/null 2>&1; then
+  echo "[+] Network '$NETWORK_NAME' not found. Creating..."
+  docker network create --driver=macvlan \
+    --subnet=192.168.1.0/24 \
+    --ip-range=192.168.1.200/29 \
+    --gateway=192.168.1.1 \
+    -o parent=eth0 \
+    "$NETWORK_NAME"
 fi
 
-# -------------------------------
-# 3. Remove existing container if present
-if docker ps -a --format '{{.Names}}' | grep -Eq "^${CONTAINER_NAME}$"; then
-  echo "Removing existing container: $CONTAINER_NAME"
-  docker rm -f $CONTAINER_NAME
-fi
+# --- CLEANUP EXISTING CONTAINER ---
+echo "[+] Cleaning up old container (if any)..."
+docker rm -f "${USER_NAME}_container" >/dev/null 2>&1 || true
 
-# -------------------------------
-# 4. Launch the container with environment variables
-docker run -it \
-  --name $CONTAINER_NAME \
-  -e USER_NAME=$USER \
-  -e USER_EMAIL=$EMAIL \
-  -e USER_PASSWORD=$PASSWORD \
-  -v $VOLUME:/app/data \
-  --network securedrop_lan \
-  $IMAGE_NAME \
+# --- LAUNCH CONTAINER ---
+echo "[+] Launching SecureDrop container for $USER_NAME..."
+docker run -it --rm \
+  --name "${USER_NAME}_container" \
+  -e USER_NAME="$USER_NAME" \
+  -v "${USER_VOLUME}:/app/data" \
+  --network "$NETWORK_NAME" \
+  "$IMAGE_NAME" \
   bash
-
-echo "✅ Container '$CONTAINER_NAME' launched with volume '$VOLUME'"
