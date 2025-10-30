@@ -4,31 +4,32 @@ import pwinput
 from password import create_salted_hash
 from Crypto.PublicKey import RSA
 
-def add_user(auto_user=None, auto_pass=None, auth_dir="/app/auth", data_dir="/app/data"):
-    os.makedirs(auth_dir, exist_ok=True)
-    os.makedirs(data_dir, exist_ok=True)
+PASSWD_FILE = "passwd.json"  # Path passed from securedrop.py
+DATA_DIR = "/app/data"       # Root data directory
 
-    passwd_file = os.path.join(auth_dir, "passwd.json")
-    if os.path.exists(passwd_file):
-        with open(passwd_file, "r") as f:
-            try:
-                users_data = json.load(f)
-            except json.JSONDecodeError:
-                users_data = {"Users": {}}
-    else:
-        users_data = {"Users": {}}
-
+def add_user(data_dir=DATA_DIR, auto_user=None, auto_pass=None):
     username = auto_user or input("Enter your Username: ").strip()
-    email = input("Enter your Email: ").strip()
+    email = input("Enter your Email: ").strip() if not auto_user else ""
     pwd = auto_pass or pwinput.pwinput(prompt="Enter your Password: ", mask="*")
     if not auto_pass:
         pwd2 = pwinput.pwinput(prompt="Reenter your Password: ", mask="*")
         if pwd != pwd2:
-            print("Passwords do not match, try again")
-            return
+            print("Passwords do not match, try again\n")
+            return add_user(data_dir=data_dir)
 
-    if username in users_data["Users"]:
-        print(f"User {username} already exists.")
+    # Load or create passwd.json
+    passwd_file = os.path.join(data_dir, "passwd.json")
+    if os.path.exists(passwd_file):
+        with open(passwd_file, "r") as f:
+            try:
+                data = json.load(f)
+            except json.JSONDecodeError:
+                data = {"Users": {}}
+    else:
+        data = {"Users": {}}
+
+    if username in data["Users"]:
+        print(f"User already registered")
         return
 
     # Generate keys
@@ -36,25 +37,25 @@ def add_user(auto_user=None, auto_pass=None, auth_dir="/app/auth", data_dir="/ap
     public_key = private_key.publickey()
     private_key_str = private_key.export_key().decode("utf-8")
     public_key_str = public_key.export_key().decode("utf-8")
-
     pwd_hash = create_salted_hash(pwd)
-    users_data["Users"][username] = {"Password": pwd_hash, "Email": email, "Public Key": public_key_str}
 
-    # Save passwd.json
+    # Update passwd.json
+    data["Users"][username] = {"Password": pwd_hash, "Email": email, "Public Key": public_key_str}
     with open(passwd_file, "w") as f:
-        json.dump(users_data, f, indent=2)
+        json.dump(data, f, indent=2)
 
     # Create user directories
     user_dir = os.path.join(data_dir, username)
-    for subdir in ["contacts", "public_keys", "private_keys"]:
-        os.makedirs(os.path.join(user_dir, subdir), exist_ok=True)
+    pub_dir = os.path.join(user_dir, "public_keys")
+    priv_dir = os.path.join(user_dir, "private_keys")
+    contacts_dir = os.path.join(user_dir, "contacts")
+    for d in [pub_dir, priv_dir, contacts_dir]:
+        os.makedirs(d, exist_ok=True)
 
-    # Save keys inside user directories
-    pub_path = os.path.join(user_dir, "public_keys", f"{username}.pub")
-    priv_path = os.path.join(user_dir, "private_keys", f"{username}.priv")
-    with open(pub_path, "w") as f:
+    # Save keys
+    with open(os.path.join(pub_dir, f"{username}.pub"), "w") as f:
         f.write(public_key_str)
-    with open(priv_path, "w") as f:
+    with open(os.path.join(priv_dir, f"{username}.priv"), "w") as f:
         f.write(private_key_str)
 
-    print(f"User {username} created successfully with keys at {user_dir}")
+    print(f"User '{username}' created successfully with directories and keys.")

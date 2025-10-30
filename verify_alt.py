@@ -4,10 +4,12 @@ import json
 import pwinput
 import password
 
-def verify(user, pwd, auth_dir="/app/auth", data_dir="/app/data"):
-    passwd_file = os.path.join(auth_dir, "passwd.json")
+def verify(user, pwd, data_dir="/app/data"):
+    passwd_file = os.path.join(data_dir, "passwd.json")
+
     if not os.path.exists(passwd_file):
-        print(f"[INFO] {passwd_file} not found. Creating empty authentication database.")
+        print(f"[INFO] {passwd_file} not found, creating empty authentication database.")
+        os.makedirs(data_dir, exist_ok=True)
         with open(passwd_file, "w") as f:
             json.dump({"Users": {}}, f)
 
@@ -21,23 +23,22 @@ def verify(user, pwd, auth_dir="/app/auth", data_dir="/app/data"):
             inp_pwd = pwinput.pwinput("Enter Password: ", mask="*")
 
         with open(passwd_file, "r") as f:
-            data = json.load(f)
+            try:
+                data = json.load(f)
+            except json.JSONDecodeError:
+                data = {"Users": {}}
 
         if inp_usr in data["Users"]:
             stored_hash = data["Users"][inp_usr]["Password"]
             if password.verify_password(stored_hash, inp_pwd):
-                # Ensure user directories exist
-                user_dir = os.path.join(data_dir, inp_usr)
-                for subdir in ["contacts", "public_keys", "private_keys"]:
-                    os.makedirs(os.path.join(user_dir, subdir), exist_ok=True)
-                print(f"Login successful for {inp_usr}")
+                print(f"Login successful: {inp_usr}")
                 return inp_usr
             else:
                 attempts -= 1
-                print(f"Incorrect credentials. Attempts remaining: {attempts}")
+                print(f"Incorrect password. Attempts remaining: {attempts}")
         else:
             attempts -= 1
-            print(f"Incorrect credentials. Attempts remaining: {attempts}")
+            print(f"Username not found. Attempts remaining: {attempts}")
 
     print("Too many failed attempts. Exiting.")
     sys.exit(1)

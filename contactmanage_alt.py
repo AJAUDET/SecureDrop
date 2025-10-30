@@ -1,21 +1,19 @@
 import os
 import json
-from network import get_online_users
 
-# Base data directory inside container
-DATA_DIR = "/app/data"
-MASTER_CONTACTS_FILE = os.path.join(DATA_DIR, "admin_master_contacts.json")
+CONTACTS_DIR = "/app/data/contacts"
+MASTER_CONTACTS_FILE = os.path.join(CONTACTS_DIR, "admin_master_contacts.json")
+DISCOVERY_FILE = "/app/data/discovered_users.json"
 
-# Ensure base directories exist
-os.makedirs(DATA_DIR, exist_ok=True)
+# Ensure directories exist
+os.makedirs(CONTACTS_DIR, exist_ok=True)
 if not os.path.exists(MASTER_CONTACTS_FILE):
     with open(MASTER_CONTACTS_FILE, "w") as f:
         json.dump({}, f, indent=4)
 
 def get_user_contacts_file(username):
-    user_contacts_dir = os.path.join(DATA_DIR, username, "contacts")
-    os.makedirs(user_contacts_dir, exist_ok=True)
-    return os.path.join(user_contacts_dir, f"{username}.json")
+    return os.path.join(CONTACTS_DIR, f"{username}.json")
+
 
 def add_contact(username):
     contacts_file = get_user_contacts_file(username)
@@ -39,11 +37,12 @@ def add_contact(username):
         "full_name": contact_full_name,
         "email": contact_email
     }
+
     with open(contacts_file, "w") as f:
         json.dump(contacts, f, indent=4)
-    print(f"Contact '{contact_username}' added successfully.")
+    print(f"Contact '{contact_username}' added successfully to your personal contacts.")
 
-    # Update master contacts
+    # Update master contact file
     with open(MASTER_CONTACTS_FILE, "r") as f:
         master_contacts = json.load(f)
 
@@ -56,6 +55,7 @@ def add_contact(username):
     with open(MASTER_CONTACTS_FILE, "w") as f:
         json.dump(master_contacts, f, indent=4)
 
+
 def list_contacts(username):
     contacts_file = get_user_contacts_file(username)
     if not os.path.exists(contacts_file):
@@ -65,9 +65,17 @@ def list_contacts(username):
     with open(contacts_file, "r") as f:
         contacts = json.load(f)
 
-    online_set = get_online_users()
-    mutual_online = []
+    # Get online users from discovery file
+    online_set = set()
+    if os.path.exists(DISCOVERY_FILE):
+        try:
+            with open(DISCOVERY_FILE, "r") as f:
+                online_data = json.load(f)
+                online_set = set(online_data.keys())
+        except json.JSONDecodeError:
+            online_set = set()
 
+    mutual_online = []
     for contact_username in contacts:
         contact_file = get_user_contacts_file(contact_username)
         if not os.path.exists(contact_file):
@@ -84,6 +92,7 @@ def list_contacts(username):
         for user_name in mutual_online:
             details = contacts[user_name]
             print(f"* {user_name}: {details['full_name']} ({details['email']})")
+
 
 def verify_contact(username):
     contacts_file = get_user_contacts_file(username)
@@ -102,6 +111,7 @@ def verify_contact(username):
     else:
         print(f"Contact '{contact_username}' not found in your contacts.")
 
+
 def admin_list(admin_username):
     if admin_username.lower() != "admin":
         print("Access denied. Only admin can view this file.")
@@ -118,6 +128,7 @@ def admin_list(admin_username):
     for key, details in master_contacts.items():
         added_by = details["added_by"]
         print(f"- {key} | Added by: {added_by} | {details['contact_full_name']} ({details['contact_email']})")
+
 
 def admin_clear(admin_username):
     if admin_username.lower() != "admin":
