@@ -3,10 +3,7 @@
   - Install git if not installed: your_package_manager install git
   - Clone the GitHub repository to your local system: git clone https://github.com/AJAUDET/SecureDrop
 
-  - Create Local Docker Containers: docker-compose up -d 
-  - Pause Local Docker Containers: docker-compose stop
-  - Terminate Local Docker Containers: docker-compose down
-
-# Commands to access a Docker Container
-  - docker exec -it host bash
-  - docker exec -it receiver bash
+  - Build Local Docker Image: docker build -t securedrop-docker_user_container .
+  - Run Undefined Image Instance: ./launch_user.sh
+  - Run Defined Image Instance: ./launch_user.sh <username>
+  - Auto Login To Instance: ./launch_user.sh <username> <password>
