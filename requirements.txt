@@ -6,3 +6,5 @@ PyYAML
 pathlib
 cryptography
 requests
+pyfiglet
+colorama
