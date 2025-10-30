@@ -1,51 +1,46 @@
-import json, os, pwinput
-from password import create_salted_hash
-from Crypto.PublicKey import RSA
+import json
+import os
+import password
 
-def add_user(username=None, email=None, password=None, data_dir="/app/data"):
-    PUB_DIR = os.path.join(data_dir, "public_keys")
-    PRIV_DIR = os.path.join(data_dir, "private_keys")
-    os.makedirs(PUB_DIR, exist_ok=True)
-    os.makedirs(PRIV_DIR, exist_ok=True)
 
-    if username is None:
-        username = input("Enter your Username: ")
-    if email is None:
-        email = input("Enter your Email: ")
-    if password is None:
-        password = pwinput.pwinput(prompt="Enter your Password: ", mask='*')
-        password2 = pwinput.pwinput(prompt="Reenter your Password: ", mask='*')
-        if password != password2:
-            print("Passwords do not match")
-            return
-
+def add_user(data_dir="/app/data", auto_user=None, auto_pass=None):
+    """
+    Adds a new user interactively or automatically.
+    - data_dir: isolated directory (volume)
+    - auto_user / auto_pass: non-interactive creation for Docker automation
+    """
     passwd_file = os.path.join(data_dir, "passwd.json")
+
+    # Load or initialize JSON structure
     if os.path.exists(passwd_file):
         with open(passwd_file, "r") as f:
             data = json.load(f)
     else:
         data = {"Users": {}}
 
+    # Gather credentials
+    if auto_user and auto_pass:
+        username = auto_user
+        password_plain = auto_pass
+    else:
+        username = input("Enter a new Username: ").strip()
+        password_plain = password.get_password_input()
+
+    # Check if user exists
     if username in data["Users"]:
-        print("User already registered")
+        print(f"User '{username}' already exists.")
         return
 
-    private_key = RSA.generate(2048)
-    public_key = private_key.public_key()
-    pwd_hash = create_salted_hash(password)
+    # Hash the password
+    hashed_pw = password.hash_password(password_plain)
 
-    data["Users"][username] = {
-        "Password": pwd_hash,
-        "Email": email,
-        "Public Key": public_key.export_key().decode()
-    }
+    # Create user directory
+    user_dir = os.path.join(data_dir, username)
+    os.makedirs(user_dir, exist_ok=True)
 
+    # Save user data
+    data["Users"][username] = {"Password": hashed_pw}
     with open(passwd_file, "w") as f:
-        json.dump(data, f, indent=2)
+        json.dump(data, f, indent=4)
 
-    with open(os.path.join(PUB_DIR, f"{username}.pub"), "w") as f:
-        f.write(public_key.export_key().decode())
-    with open(os.path.join(PRIV_DIR, f"{username}.priv"), "w") as f:
-        f.write(private_key.export_key().decode())
-
-    print(f"User {username} created successfully")
+    print(f"✅ User '{username}' registered successfully in isolated data volume.")

@@ -1,28 +1,16 @@
-import verify_alt
-import pwinput
-import user_alt
 import os
+import sys
+import pwinput
+import verify_alt as verify
+import user as user
 from contactmanage_alt import add_contact, list_contacts, verify_contact, admin_list, admin_clear
 from network import start_network
 from welcome import welcome_msg
-import sys
 
-# ------------------------------
-# Use environment variable or default to /app/data
-DATA_DIR = os.environ.get("DATA_DIR", "/app/data")
-os.makedirs(DATA_DIR, exist_ok=True)
+# --- Volume root for this user ---
+DATA_DIR = "/app/data"
 
-# Patch user.py to store keys & passwd.json in DATA_DIR
-user_alt.DATA_DIR = DATA_DIR
-
-# Patch contactmanage.py functions to store contacts in DATA_DIR
-add_contact.DATA_DIR = DATA_DIR
-list_contacts.DATA_DIR = DATA_DIR
-verify_contact.DATA_DIR = DATA_DIR
-admin_list.DATA_DIR = DATA_DIR
-admin_clear.DATA_DIR = DATA_DIR
-
-# Command mapping
+# Command map
 command_map = {
     "add": add_contact,
     "list": list_contacts,
@@ -33,45 +21,55 @@ command_map = {
     "exit": lambda _: sys.exit(0)
 }
 
+
 def main(username):
+    """Interactive shell for the user inside the container"""
     while True:
         cmd = input(f"{username}@securedrop.com: ").strip()
         if cmd in command_map:
             command_map[cmd](username)
         elif cmd == "help":
-            print("Available commands: add, list, verify, clear, exit")
-            if username == "admin":
-                print("admin_list, admin_clear")
+            print("Available commands:")
+            print("add - Add a new contact")
+            print("list - List all contacts")
+            print("verify - Verify a contact's identity")
+            print("clear - Clears the terminal")
+            print("exit - Exit SecureDrop")
+            if username == 'admin':
+                print("admin_list - View all users’ contacts (admin only)")
+                print("admin_clear - Clear the master contact log (admin only)")
         else:
-            print("Unknown command. Type 'help' for commands.")
+            print("Unknown command. Type 'help' for a list of commands.")
 
-# ------------------------------
-if __name__ == '__main__':
-    env_user = os.environ.get("USER_NAME")
-    env_email = os.environ.get("USER_EMAIL")
-    env_password = os.environ.get("USER_PASSWORD")
 
-    if env_user and env_email and env_password:
-        # Auto-register user if not present
-        user_alt.add_user(username=env_user, email=env_email, password=env_password, data_dir=DATA_DIR)
-        username = env_user
-        pwd = env_password
+if __name__ == "__main__":
+    # Ensure data directory exists inside the volume
+    os.makedirs(DATA_DIR, exist_ok=True)
+
+    # Get user info from environment variables
+    username = os.getenv("USER_NAME")
+    password_env = os.getenv("USER_PASSWORD")
+
+    if not username:
+        print("Error: USER_NAME environment variable not set.")
+        sys.exit(1)
+
+    # Auto-register if user doesn’t exist yet
+    passwd_file = os.path.join(DATA_DIR, "passwd.json")
+    if not os.path.exists(passwd_file):
+        print(f"Initializing new SecureDrop volume for user '{username}'")
+        user.add_user(data_dir=DATA_DIR, auto_user=username, auto_pass=password_env)
     else:
-        # Interactive registration
-        login = input("Would you like to register (y/n): ").strip()
-        if login.lower() == "y":
-            user_alt.add_user(data_dir=DATA_DIR)
-        username = input("Enter your Username: ").strip()
-        pwd = pwinput.pwinput(prompt="Enter your Password: ", mask='*')
+        print(f"Using existing SecureDrop data for '{username}'")
 
-    # Verify credentials
-    verify_alt.verify(username, pwd, data_dir=DATA_DIR)
+    # Verify user (uses verify_alt, volume-aware)
+    verify.verify(username, password_env, data_dir=DATA_DIR)
 
-    # Start network broadcast/listen
+    # Start networking
     start_network(username)
 
-    # Welcome message
+    # Display welcome message
     welcome_msg(username)
 
-    # Start command loop
+    # Enter main CLI loop
     main(username)
