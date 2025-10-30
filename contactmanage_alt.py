@@ -1,93 +1,134 @@
-import json
 import os
+import json
+from network import get_online_users
 
-def get_contacts_file(data_dir, username):
-    """Return per-user contact file path."""
-    os.makedirs(os.path.join(data_dir, username), exist_ok=True)
-    return os.path.join(data_dir, username, f"{username}_contacts.json")
+# Base data directory inside container
+DATA_DIR = "/app/data"
+MASTER_CONTACTS_FILE = os.path.join(DATA_DIR, "admin_master_contacts.json")
 
+# Ensure base directories exist
+os.makedirs(DATA_DIR, exist_ok=True)
+if not os.path.exists(MASTER_CONTACTS_FILE):
+    with open(MASTER_CONTACTS_FILE, "w") as f:
+        json.dump({}, f, indent=4)
 
-def add_contact(username, data_dir="/app/data"):
-    """Add a new contact for the current user."""
-    contacts_file = get_contacts_file(data_dir, username)
+def get_user_contacts_file(username):
+    user_contacts_dir = os.path.join(DATA_DIR, username, "contacts")
+    os.makedirs(user_contacts_dir, exist_ok=True)
+    return os.path.join(user_contacts_dir, f"{username}.json")
 
-    contact_name = input("Enter contact name: ").strip()
-    contact_info = input("Enter contact info: ").strip()
+def add_contact(username):
+    contacts_file = get_user_contacts_file(username)
 
-    contacts = {}
-    if os.path.exists(contacts_file):
-        with open(contacts_file, "r") as f:
-            contacts = json.load(f)
+    if not os.path.exists(contacts_file):
+        with open(contacts_file, "w") as f:
+            json.dump({}, f, indent=4)
 
-    contacts[contact_name] = contact_info
+    with open(contacts_file, "r") as f:
+        contacts = json.load(f)
 
+    contact_username = input("Enter the username of the contact: ").strip()
+    contact_full_name = input("Enter the full name of the contact: ").strip()
+    contact_email = input("Enter the email of the contact: ").strip()
+
+    if contact_username in contacts:
+        print(f"{contact_username} is already in your contacts.")
+        return
+
+    contacts[contact_username] = {
+        "full_name": contact_full_name,
+        "email": contact_email
+    }
     with open(contacts_file, "w") as f:
         json.dump(contacts, f, indent=4)
+    print(f"Contact '{contact_username}' added successfully.")
 
-    print(f"Contact '{contact_name}' added successfully.")
+    # Update master contacts
+    with open(MASTER_CONTACTS_FILE, "r") as f:
+        master_contacts = json.load(f)
 
+    master_contacts[f"{username}:{contact_username}"] = {
+        "added_by": username,
+        "contact_full_name": contact_full_name,
+        "contact_email": contact_email
+    }
 
-def list_contacts(username, data_dir="/app/data"):
-    """List all contacts for a user."""
-    contacts_file = get_contacts_file(data_dir, username)
+    with open(MASTER_CONTACTS_FILE, "w") as f:
+        json.dump(master_contacts, f, indent=4)
 
+def list_contacts(username):
+    contacts_file = get_user_contacts_file(username)
     if not os.path.exists(contacts_file):
-        print("No contacts found.")
+        print("You have no contacts.")
         return
 
     with open(contacts_file, "r") as f:
         contacts = json.load(f)
 
-    print(f"\n📇 Contacts for {username}:")
-    for name, info in contacts.items():
-        print(f" - {name}: {info}")
+    online_set = get_online_users()
+    mutual_online = []
 
+    for contact_username in contacts:
+        contact_file = get_user_contacts_file(contact_username)
+        if not os.path.exists(contact_file):
+            continue
+        with open(contact_file, "r") as f:
+            their_contacts = json.load(f)
+        if username in their_contacts and contact_username in online_set:
+            mutual_online.append(contact_username)
 
-def verify_contact(username, data_dir="/app/data"):
-    """Verify that a given contact exists."""
-    contacts_file = get_contacts_file(data_dir, username)
-    if not os.path.exists(contacts_file):
-        print("No contacts found.")
-        return
-
-    with open(contacts_file, "r") as f:
-        contacts = json.load(f)
-
-    contact_name = input("Enter contact name to verify: ").strip()
-    if contact_name in contacts:
-        print(f"✅ Contact '{contact_name}' exists.")
+    if not mutual_online:
+        print("No contacts currently online.")
     else:
-        print(f"❌ Contact '{contact_name}' not found.")
+        print("The following contacts are online:")
+        for user_name in mutual_online:
+            details = contacts[user_name]
+            print(f"* {user_name}: {details['full_name']} ({details['email']})")
 
-
-def admin_list(username, data_dir="/app/data"):
-    """Admin function: list all user contacts (read-only)."""
-    if username != "admin":
-        print("Access denied.")
+def verify_contact(username):
+    contacts_file = get_user_contacts_file(username)
+    if not os.path.exists(contacts_file):
+        print("You have no contacts.")
         return
 
-    print("\n🗂️ Admin view: All user contact files")
-    for root, dirs, files in os.walk(data_dir):
-        for file in files:
-            if file.endswith("_contacts.json"):
-                path = os.path.join(root, file)
-                print(f"\nFrom file: {path}")
-                with open(path, "r") as f:
-                    data = json.load(f)
-                    for name, info in data.items():
-                        print(f" - {name}: {info}")
+    with open(contacts_file, "r") as f:
+        contacts = json.load(f)
 
+    contact_username = input("Enter the username of the contact to verify: ").strip()
+    if contact_username in contacts:
+        print(f"Contact '{contact_username}' exists.")
+        print(f"Full Name: {contacts[contact_username]['full_name']}")
+        print(f"Email: {contacts[contact_username]['email']}")
+    else:
+        print(f"Contact '{contact_username}' not found in your contacts.")
 
-def admin_clear(username, data_dir="/app/data"):
-    """Admin function: clear all contact files."""
-    if username != "admin":
-        print("Access denied.")
+def admin_list(admin_username):
+    if admin_username.lower() != "admin":
+        print("Access denied. Only admin can view this file.")
         return
 
-    for root, dirs, files in os.walk(data_dir):
-        for file in files:
-            if file.endswith("_contacts.json"):
-                os.remove(os.path.join(root, file))
-                print(f"Cleared {file}")
+    with open(MASTER_CONTACTS_FILE, "r") as f:
+        master_contacts = json.load(f)
 
-    print("🧹 All contact files cleared.")
+    if not master_contacts:
+        print("No contacts recorded in the admin file.")
+        return
+
+    print("Master Contact Log:")
+    for key, details in master_contacts.items():
+        added_by = details["added_by"]
+        print(f"- {key} | Added by: {added_by} | {details['contact_full_name']} ({details['contact_email']})")
+
+def admin_clear(admin_username):
+    if admin_username.lower() != "admin":
+        print("Access denied. Only admin can perform this action.")
+        return
+
+    confirm = input("Are you sure you want to clear the master contact log? (y/n): ").strip().lower()
+    if confirm != "y":
+        print("Operation cancelled.")
+        return
+
+    with open(MASTER_CONTACTS_FILE, "w") as f:
+        json.dump({}, f, indent=4)
+    print("Admin master contact log cleared.")

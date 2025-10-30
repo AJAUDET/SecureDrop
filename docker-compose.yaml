@@ -1,20 +1,29 @@
 version: "3.9"
 
 services:
-  user_container:
-    image: securedrop_user_container:latest  # explicit image name
+  securedrop_user:
+    container_name: "securedrop_user"
+    image: securedrop-docker_user_container:latest
     build:
       context: .
       dockerfile: Dockerfile
     environment:
-      - USER_NAME
-      - USER_EMAIL
-      - USER_PASSWORD
+      - USER_NAME=${USER_NAME}
+      - USER_PASSWORD=${USER_PASSWORD}
+    volumes:
+      - securedrop_auth:/app/auth       # Shared authentication database
+      - securedrop_data:/app/data       # Shared data root (per-user directories)
     stdin_open: true
     tty: true
-    restart: always
+    restart: unless-stopped
     networks:
       - securedrop_lan
+
+volumes:
+  securedrop_auth:
+    name: securedrop_auth
+  securedrop_data:
+    name: securedrop_data
 
 networks:
   securedrop_lan:
