@@ -4,6 +4,7 @@
   - Clone the GitHub repository to your local system: git clone https://github.com/AJAUDET/SecureDrop
 
   - Build Local Docker Image: docker build -t securedrop-docker_user_container .
+  - Run Command: chmod +x launch_user.sh
   - Run Undefined Image Instance: ./launch_user.sh
   - Run Defined Image Instance: ./launch_user.sh <username>
   - Auto Login To Instance: ./launch_user.sh <username> <password>

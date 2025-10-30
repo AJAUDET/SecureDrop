@@ -1,9 +1,0 @@
-{
-  "Users": {
-    "Nanook": {
-      "Password": "{\"salt\": \"3aa2992541a321cf5cca979aa559538f\", \"hash\": \"a8ff49c32135589c1fa300570de1c53704b15c93f5d6d06b31115c1a65639530\"}",
-      "Email": "",
-      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAr03l8REMnyJQhhszM5Tw\nvuJVz021lzJ0mXS/tCQlWnwtcGDrpHQx9T+IhsdDgxC6d3I+z36svvxQJ+5dqe8T\nq1YSbMsPiZVmXKpvE1S9QYLkj7Fiv1pDG1+ttpqxuRLvKVhYGK/V3unqITjoTckk\nnwXCs3RZoiHb6UoBw2/QO8sQcKRTv0De+7NJpLMkEPcnSXo4jfajiK2X2yGYrkVC\nO5odxkn0R/4wYEkc0vkYm5EpeFgMa4QMXh9w7/CHGQccNfufN092YRLQVr8/cr4K\nslNF81mCe7NElQHTjL7sVp+OoqEulUNDuGXECNqymuRXRBlzslpe2jjcpmmbfAQp\nUQIDAQAB\n-----END PUBLIC KEY-----"
-    }
-  }
-}

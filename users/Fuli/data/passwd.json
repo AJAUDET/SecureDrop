@@ -1,9 +1,0 @@
-{
-  "Users": {
-    "Fuli": {
-      "Password": "{\"salt\": \"0599151bff75df6f6ea50d9c070c3bea\", \"hash\": \"3846cccc5f1ad9873e1b76bd2d92102cc1c63c4c7ae21ab42ae30a6ad461b6c3\"}",
-      "Email": "",
-      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwsfR78PDqfk0AztFADiC\nTW0Go4LhydGxcwmQ4Xjmid8wDLMysxbF6jwy4PrTYDiZQ3ui4ihdJANIDMiB74S/\n8B/C8xI+p38iNQpm7wlIFu7NTX08QUyS8JBbZsonhr19EVP8A9k3B0h3i4h/Px8E\nB/KWsLQ8wwaYbo9R1X4Ie/sAryE0oLi9XkLfKxLA2RsqHvQYxYOrdqOU8N4pGoa8\nSVlMKB9yJhqOYC63FjfUFOeheE5um9YHSJCulHOK0LyRd0p9NVpUxDPZELFGYwnf\ni4Gv77wvU8FE0r+V2bFKKvxxlDRmyB761IY8MPFqo+YjuI7JMfcqLhMZNp45QMxP\nRQIDAQAB\n-----END PUBLIC KEY-----"
-    }
-  }
-}

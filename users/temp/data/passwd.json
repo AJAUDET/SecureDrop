@@ -1,0 +1,9 @@
+{
+  "Users": {
+    "temp": {
+      "Password": "{\"salt\": \"0b113cbbd2486489bc7381bc36d86ac3\", \"hash\": \"ecb7c8d4e112603e2f478080ececb67b298df802775737af1d8a0854530e90b9\"}",
+      "Email": "temp@mail.com",
+      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqXOoTQASXhSLjavzDZp0\nKjxaa05d0eQhS29I8hrhqOBe5a0QrRELmQuIMCZc5/FPmcEFLBr5/Lx/W8MdRS+H\nQ7qieBG9ONkAKT74xVEKZZZ6mmP8qe9ncDnOvYwuqRG4W695Iq8E1xVyU3yXljiv\nr7/HxZWoKiQ9KcWW/iyhEtU2voL6lLJ6ZWQAY9cIjqpDKF9ngrNoyDKwAONvjay/\n7iwhx7e495jkwFumBCHExQ80XtVbvTzXN1ZX7TVV4Oa3ijvVXkD5k/biszN5ArkN\necT5dsdEqeZ9M/x3CSfKmC2qGWgNa/VbLAxwx80n3ArO4hVgZKeNPlf+nwzMaJQ9\nqQIDAQAB\n-----END PUBLIC KEY-----"
+    }
+  }
+}

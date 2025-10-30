@@ -1,0 +1,9 @@
+{
+  "Users": {
+    "car": {
+      "Password": "{\"salt\": \"c17942b83a73ad288831809b688bd058\", \"hash\": \"30c1dd4bbd5f0480c18e0eb1bcc596f12b61f824089f49fd646f67d4e4cb0049\"}",
+      "Email": "car@car.com",
+      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvBKQhpyJZku42cJwNlDC\no/QvfOLLjvAjCw7ovHRWOLXCe6F+TSZnxG3x2uZu70e3NzwJewSYTpH0i3fsUo27\nnHBwd6xx383Lr5s0GKh2LLRjXb91DXC8zZA2uIuWm4pajd1m2lbGy+yGEVIdCV0Y\neWX0u3pLhjBDSR/hyJWf49mRgfxdoI7OyPhtW0CKDewLM8SMLFyRrzKODDvBxmWc\njdUgqYohJSTHTECBvyDDT7CiATUppIzfjGdvrI6/OiLs9+tVdI4/Cg0EE1Z0i4QL\nkqFwl49WNeoMZ/Ejlty/EnGU76NQOglTwPpbH06Dg3Nf5Z8A99H2Csw2WHwD0lFz\n/QIDAQAB\n-----END PUBLIC KEY-----"
+    }
+  }
+}

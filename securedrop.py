@@ -21,7 +21,6 @@ command_map = {
     "exit": lambda _: sys.exit(0)
 }
 
-
 def main(username):
     while True:
         cmd = input(f"{username}@securedrop.com: ").strip()
@@ -33,7 +32,6 @@ def main(username):
                 print("admin_list, admin_clear")
         else:
             print("Unknown command. Type 'help' for a list of commands.")
-
 
 if __name__ == "__main__":
     os.makedirs(DATA_ROOT, exist_ok=True)
@@ -53,6 +51,7 @@ if __name__ == "__main__":
     # Get environment variables for automated login
     username = os.environ.get("USER_NAME")
     password_env = os.environ.get("USER_PASSWORD")
+    email_env = os.environ.get("USER_EMAIL")
 
     # --- Automated login if username exists ---
     if username and username in data["Users"]:
@@ -62,15 +61,24 @@ if __name__ == "__main__":
     # --- Automated user creation if username does not exist ---
     elif username and username not in data["Users"]:
         password_env = password_env or pwinput.pwinput(f"Create password for {username}: ", mask="*")
-        user.add_user(data_dir=DATA_ROOT, auto_user=username, auto_pass=password_env)
+        if not email_env:
+            email_env = input(f"Enter email for {username}: ").strip()
+            while not email_env:
+                print("Email cannot be empty.")
+                email_env = input(f"Enter email for {username}: ").strip()
+        user.add_user(data_dir=DATA_ROOT, auto_user=username, auto_pass=password_env, email=email_env)
 
     # --- Interactive login/register ---
     else:
         action = input("Do you want to (l)ogin or (r)egister? [l/r]: ").strip().lower()
         if action == "r":
-            user.add_user(data_dir=DATA_ROOT)
             username = input("Enter your Username: ").strip()
             password_env = pwinput.pwinput(prompt="Enter your Password: ", mask="*")
+            email_env = input(f"Enter your Email for {username}: ").strip()
+            while not email_env:
+                print("Email cannot be empty.")
+                email_env = input(f"Enter your Email for {username}: ").strip()
+            user.add_user(data_dir=DATA_ROOT, auto_user=username, auto_pass=password_env, email=email_env)
             verify.verify(username, password_env, data_dir=DATA_ROOT)
         elif action == "l":
             username = input("Enter your Username: ").strip()
