@@ -1,21 +1,37 @@
-# SecureDrop Dockerfile
+# --- Base Image ---
+FROM python:3.12-slim
 
-FROM python:3.11-slim
+# --- Environment Variables ---
+ENV PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
 
-# Set working directory
+# --- Install system dependencies ---
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        build-essential \
+        libssl-dev \
+        libffi-dev \
+        python3-dev \
+        git \
+        curl && \
+    rm -rf /var/lib/apt/lists/*
+
+# --- Set working directory ---
 WORKDIR /app
 
-# Copy requirements first (for caching)
-COPY requirements.txt .
+# --- Copy source code ---
+COPY . /app
 
-# Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# --- Install Python dependencies ---
+RUN pip install --upgrade pip
+RUN if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-# Copy the rest of the source code
-COPY . .
+# --- Ensure templates directory exists ---
+RUN mkdir -p /app/templates
 
-# Ensure data directory exists
-RUN mkdir -p /app/data
+# --- Create default template files ---
+# (these will be copied to user volumes on first run)
+COPY templates/ /app/templates/
 
-# Default command - can be overridden by docker-compose
+# --- Set default command ---
 CMD ["python3", "securedrop.py"]

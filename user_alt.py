@@ -1,46 +1,64 @@
-import json
 import os
-import password
-
+import json
+import pwinput
+from password import create_salted_hash
+from Crypto.PublicKey import RSA
 
 def add_user(data_dir="/app/data", auto_user=None, auto_pass=None):
-    """
-    Adds a new user interactively or automatically.
-    - data_dir: isolated directory (volume)
-    - auto_user / auto_pass: non-interactive creation for Docker automation
-    """
+    pub_dir = os.path.join(data_dir, "public_keys")
+    priv_dir = os.path.join(data_dir, "private_keys")
+    os.makedirs(pub_dir, exist_ok=True)
+    os.makedirs(priv_dir, exist_ok=True)
+
     passwd_file = os.path.join(data_dir, "passwd.json")
 
-    # Load or initialize JSON structure
+    if auto_user and auto_pass:
+        username = auto_user
+        pwd = auto_pass
+        email = ""
+    else:
+        username = input("Enter your Username: ").strip()
+        email = input("Enter your Email: ").strip()
+        pwd = pwinput.pwinput(prompt="Enter your Password: ", mask="*")
+        pwd2 = pwinput.pwinput(prompt="Reenter your Password: ", mask="*")
+        if pwd != pwd2:
+            print("Passwords do not match, try again\n")
+            return
+
+    # Load existing users
     if os.path.exists(passwd_file):
         with open(passwd_file, "r") as f:
-            data = json.load(f)
+            try:
+                data = json.load(f)
+            except json.JSONDecodeError:
+                data = {"Users": {}}
     else:
         data = {"Users": {}}
 
-    # Gather credentials
-    if auto_user and auto_pass:
-        username = auto_user
-        password_plain = auto_pass
-    else:
-        username = input("Enter a new Username: ").strip()
-        password_plain = password.get_password_input()
-
-    # Check if user exists
     if username in data["Users"]:
-        print(f"User '{username}' already exists.")
+        print(f"User already registered")
         return
 
-    # Hash the password
-    hashed_pw = password.hash_password(password_plain)
+    # Generate RSA keys
+    private_key = RSA.generate(2048)
+    public_key = private_key.publickey()
+    private_key_str = private_key.export_key().decode("utf-8")
+    public_key_str = public_key.export_key().decode("utf-8")
 
-    # Create user directory
-    user_dir = os.path.join(data_dir, username)
-    os.makedirs(user_dir, exist_ok=True)
+    pwd_hash = create_salted_hash(pwd)
 
-    # Save user data
-    data["Users"][username] = {"Password": hashed_pw}
+    data["Users"][username] = {
+        "Password": pwd_hash,
+        "Email": email,
+        "Public Key": public_key_str
+    }
+
     with open(passwd_file, "w") as f:
-        json.dump(data, f, indent=4)
+        json.dump(data, f, indent=2)
 
-    print(f"✅ User '{username}' registered successfully in isolated data volume.")
+    with open(os.path.join(pub_dir, f"{username}.pub"), "w") as f:
+        f.write(public_key_str)
+    with open(os.path.join(priv_dir, f"{username}.priv"), "w") as f:
+        f.write(private_key_str)
+
+    print(f"[+] User '{username}' created successfully")
