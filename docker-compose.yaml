@@ -14,8 +14,7 @@ services:
     tty: true
     restart: always
     networks:
-      securedrop_lan:
-        ipv4_address: 192.168.1.201  # unique IP for this container
+      - securedrop_bridge
 
   receiver:
     container_name: receiver_container
@@ -30,8 +29,7 @@ services:
     tty: true
     restart: always
     networks:
-      securedrop_lan:
-        ipv4_address: 192.168.1.202  # unique IP for this container
+      - securedrop_bridge
 
 volumes:
   securedrop_auth:
@@ -40,12 +38,5 @@ volumes:
     name: securedrop_data
 
 networks:
-  securedrop_lan:
-    driver: macvlan
-    driver_opts:
-      parent: eth0  # replace with your actual host interface
-    ipam:
-      config:
-        - subnet: 192.168.1.0/24       # Your LAN subnet
-          ip_range: 192.168.1.200/29   # Small range for containers only
-          # DO NOT specify gateway to avoid conflicts
+  securedrop_bridge:
+    driver: bridge
