@@ -15,7 +15,7 @@ services:
     restart: always
     networks:
       securedrop_lan:
-        ipv4_address: 192.168.1.201  # Unique IP for this container
+        ipv4_address: 192.168.1.201  # unique IP for this container
 
   receiver:
     container_name: receiver_container
@@ -31,7 +31,7 @@ services:
     restart: always
     networks:
       securedrop_lan:
-        ipv4_address: 192.168.1.202  # Unique IP for this container
+        ipv4_address: 192.168.1.202  # unique IP for this container
 
 volumes:
   securedrop_auth:
@@ -43,9 +43,9 @@ networks:
   securedrop_lan:
     driver: macvlan
     driver_opts:
-      parent: eth0                  # Replace with your actual host interface
+      parent: eth0  # replace with your actual host interface
     ipam:
       config:
-        - subnet: 192.168.1.0/24      # Your LAN subnet
-          ip_range: 192.168.1.200/29  # Small range for containers
-          gateway: 192.168.1.1
+        - subnet: 192.168.1.0/24       # Your LAN subnet
+          ip_range: 192.168.1.200/29   # Small range for containers only
+          # DO NOT specify gateway to avoid conflicts
