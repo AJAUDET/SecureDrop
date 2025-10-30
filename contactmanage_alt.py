@@ -1,25 +1,26 @@
-# Changed implementation to handle docker containers
-
 import os
 import json
 from network import get_online_users
 
-# DATA_DIR will be set from securedrop.py
-DATA_DIR = "."
-
+# ------------------------------
+# Use DATA_DIR environment variable or default
+DATA_DIR = os.environ.get("DATA_DIR", "/app/data")
 CONTACTS_DIR = os.path.join(DATA_DIR, "contacts")
 MASTER_CONTACTS_FILE = os.path.join(CONTACTS_DIR, "admin_master_contacts.json")
 
+# Ensure directories exist
 os.makedirs(CONTACTS_DIR, exist_ok=True)
 if not os.path.exists(MASTER_CONTACTS_FILE):
     with open(MASTER_CONTACTS_FILE, "w") as f:
         json.dump({}, f, indent=4)
 
+# ------------------------------
 def get_user_contacts_file(username):
     return os.path.join(CONTACTS_DIR, f"{username}.json")
 
 def add_contact(username):
     contacts_file = get_user_contacts_file(username)
+
     if not os.path.exists(contacts_file):
         with open(contacts_file, "w") as f:
             json.dump({}, f, indent=4)
@@ -44,6 +45,7 @@ def add_contact(username):
         json.dump(contacts, f, indent=4)
     print(f"Contact '{contact_username}' added successfully to your personal contacts.")
 
+    # Update master contact log
     with open(MASTER_CONTACTS_FILE, "r") as f:
         master_contacts = json.load(f)
 

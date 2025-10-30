@@ -12,10 +12,10 @@ import sys
 DATA_DIR = os.environ.get("DATA_DIR", "/app/data")
 os.makedirs(DATA_DIR, exist_ok=True)
 
-# Update user.py to write/read inside container volume
+# Patch user.py to store keys & passwd.json in DATA_DIR
 user_alt.DATA_DIR = DATA_DIR
 
-# Patch contactmanage.py functions to use DATA_DIR
+# Patch contactmanage.py functions to store contacts in DATA_DIR
 add_contact.DATA_DIR = DATA_DIR
 list_contacts.DATA_DIR = DATA_DIR
 verify_contact.DATA_DIR = DATA_DIR
@@ -45,6 +45,7 @@ def main(username):
         else:
             print("Unknown command. Type 'help' for commands.")
 
+# ------------------------------
 if __name__ == '__main__':
     env_user = os.environ.get("USER_NAME")
     env_email = os.environ.get("USER_EMAIL")

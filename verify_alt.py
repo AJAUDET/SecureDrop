@@ -5,7 +5,11 @@ import password
 import os
 
 def verify(user, pwd, data_dir="."):
+    passwd_file = os.path.join(data_dir, "passwd.json")
+    with open(passwd_file, "r") as f:
+        data = json.load(f)
     passwd_file = os.path.join(data_dir, 'passwd.json')
+
     attempts = 3
     try:
         with open(passwd_file, 'r') as f:

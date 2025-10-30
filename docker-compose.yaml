@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   user_container:
-    container_name: "user_container"   # will be overridden in launch script
+    image: securedrop_user_container:latest  # explicit image name
     build:
       context: .
       dockerfile: Dockerfile
