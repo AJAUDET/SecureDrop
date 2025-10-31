@@ -14,6 +14,11 @@
       "Password": "{\"salt\": \"bc8be92baee3666a98315de57bbb65fa\", \"hash\": \"5dde148e9be36a56e1468fef927eaa9b8090fd06396a28153b8e183e9708f6d3\"}",
       "Email": "test@test_user.com",
       "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlw38/+d1TgyOzf4vpWjZ\n7+hEOntfTG2ouhGbXw0nLJblf3A6TTMq7vFMCJcfGM/fZ5SOKGPhdz3wjN8j1kKz\n/Cf2gC43Nk1YIwoXxUXHrNrfM/pFPj3XbEZlrsjbNX/iYtSlqZqQhljEOT/m4mF7\n+ciUqhWveTYDw/zeVZasJRH9kbjlkGwFUeGW6asjasYL5LWDNuD2vPxYtrsiCJo0\n1Z/NUH+Ou1Clfqg5kN0P+amS554rhUQShE/IoTFNpO60LATEosVi/adpg0Cqo+qh\n177pHTARS2cF40RrEIhTS3jHPQho9ExDLPDc40dVsYMpXZ7H0cnCjnWyZqK2GYfQ\neQIDAQAB\n-----END PUBLIC KEY-----"
+    },
+    "Nous": {
+      "Password": "{\"salt\": \"403dd1ccac64c74f6d0094564e979758\", \"hash\": \"6a8f2cba4d1ed38592671e3498f52d323609ec42aa509a8124c1d615c53200e5\"}",
+      "Email": "genius@society.com",
+      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmiVxBNYLRteGNJ3eISsc\n86YmOTvf/N8wLzsFJjwiMk8Ck7KvHvjDBhDH92jp7L3fJw/HTdt6FsCeyg49GbI1\ntVw7YFSyH+fiJXfVw2E9IeTtx4LxGNJYOG8DDIxtQc9iYt55FmZpMerWHgTkxN4s\nqsX1ZVKWknc8EjA0Z8/Xt/oHm4wfeQKHOP38PQ9+lPRuMtClWtYCJOThzy3NyLC6\neskAKRXwWS+HixUhd2r/jWmOLb9fEVPbVZpFn/4k1pHlYQK+ETiffq0YZEGikEA6\nWgxZEL0I40DI6vPmjk4HRw1/HwBcpghCDGTjxEiiFqeElvR46T340KgFV1BTlGKo\nJQIDAQAB\n-----END PUBLIC KEY-----"
     }
   }
 }

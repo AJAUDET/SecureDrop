@@ -8,5 +8,25 @@
         "added_by": "Mythus",
         "contact_full_name": "Fuli The Remembrance",
         "contact_email": "garden@recollection.com"
+    },
+    "Nous:Fuli": {
+        "added_by": "Nous",
+        "contact_full_name": "Fuli  The Remembrance",
+        "contact_email": "garden@recollection.com"
+    },
+    "Fuli:Nous": {
+        "added_by": "Fuli",
+        "contact_full_name": "Nous tThe Erudition",
+        "contact_email": "genius@society.com"
+    },
+    "Mythus:Nous": {
+        "added_by": "Mythus",
+        "contact_full_name": "Nous The Erudition",
+        "contact_email": "genius@society.com"
+    },
+    "Nous:Mythus": {
+        "added_by": "Nous",
+        "contact_full_name": "Mythus The Enigmata",
+        "contact_email": "enigmata@author.com"
     }
 }
