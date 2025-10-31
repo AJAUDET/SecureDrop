@@ -12,7 +12,6 @@ file_lock = threading.Lock()
 
 
 def get_local_ip():
-    """Get this container’s IP on the bridge network."""
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
         s.connect(("8.8.8.8", 80))
@@ -25,7 +24,6 @@ def get_local_ip():
 
 
 def get_user_contacts(username):
-    """Load the current user's contact list."""
     contacts_file = os.path.join(CONTACTS_DIR, f"{username}.json")
     if not os.path.exists(contacts_file):
         return {}
@@ -37,14 +35,12 @@ def get_user_contacts(username):
 
 
 def is_mutual_contact(user_a, user_b):
-    """Check if both users have added each other."""
     contacts_a = get_user_contacts(user_a)
     contacts_b = get_user_contacts(user_b)
     return user_b in contacts_a and user_a in contacts_b
 
 
 def ping_listener():
-    """Listen for ping requests and respond with pong."""
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.bind(("0.0.0.0", PING_PORT))
     while True:
@@ -54,7 +50,6 @@ def ping_listener():
 
 
 def ping_user(ip):
-    """Ping another container and wait for pong reply."""
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.settimeout(1)
     try:
@@ -68,7 +63,6 @@ def ping_user(ip):
 
 
 def update_discovery(username, local_ip):
-    """Register or update this user's presence."""
     os.makedirs(os.path.dirname(DISCOVERY_FILE), exist_ok=True)
     with file_lock:
         if os.path.exists(DISCOVERY_FILE):
@@ -87,7 +81,6 @@ def update_discovery(username, local_ip):
 
 
 def check_contacts(username):
-    """Continuously check mutual contacts for reachability."""
     while True:
         local_ip = get_local_ip()
         update_discovery(username, local_ip)
@@ -133,7 +126,6 @@ def check_contacts(username):
 
 
 def start_network(username):
-    """Start all background threads for this user."""
     local_ip = get_local_ip()
     update_discovery(username, local_ip)
     threading.Thread(target=ping_listener, daemon=True).start()
