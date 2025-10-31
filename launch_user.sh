@@ -56,7 +56,6 @@ docker run -it \
     bash -c "python3 securedrop.py; cd /app/data/private; exec bash"
 
 # Close out of container after use
-
 if docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
     echo "[INFO] Removing existing container $CONTAINER_NAME..."
     docker rm -f "$CONTAINER_NAME"
