@@ -12,6 +12,7 @@ from network_alt import start_network, remove_from_discovery
 from welcome import welcome_msg
 
 DATA_ROOT = "/app/data/shared"
+PRIVATE_DIR = "/app/data/private"
 PASSWD_FILE = os.path.join(DATA_ROOT, "passwd.json")
 
 command_map = {
@@ -48,6 +49,7 @@ def main(username):
 
 if __name__ == "__main__":
     os.makedirs(DATA_ROOT, exist_ok=True)
+    os.makedirs(PRIVATE_DIR, exist_ok=True)
 
     # Load existing users
     if os.path.exists(PASSWD_FILE):
