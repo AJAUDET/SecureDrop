@@ -1,0 +1,10 @@
+{
+  "Fuli": {
+    "ip": "172.19.0.2",
+    "online": true
+  },
+  "Mythus": {
+    "ip": "172.19.0.3",
+    "online": true
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "Users": {
+    "Fuli": {
+      "Password": "{\"salt\": \"f0fef22c8f7797ed65981b1ce5b20fc2\", \"hash\": \"e29edacae4829b98403452e6982698e3a91b6a9428295bc28e6d690624323ea1\"}",
+      "Email": "garden@recollection.com",
+      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoSIjL8ZsXj5WzIaA/AfM\ni/8JnciKbdYVbMq+fH5LTNZAaTo6SvpNATMdONxljkpGhDJGMk566RJC2i6R4eKq\nP3zh0JghKAO4OuVPvz7fjiNR53gdEQGZYRE/YMshb0Qz+I9m8hkEXTpC0uV42aj1\ndfTzAdcLXLcO+RX1Xn9D/Nkkf6P3Cjxr7tPIM+c0fm/Ck4wd6LNuWziJFTTo8DUj\nN4lfOSjfUhksXkz45EorLuHcefjLQvREP1wnSONewV8q4DAW0yl6nnwPOwWxe9ZM\nsfBYA95ovr3KXv4cgp7BVGLdEWz7VLx/MEhoj5bs8Q3tl6UUrY7aR9iwqJMstrGY\n9QIDAQAB\n-----END PUBLIC KEY-----"
+    },
+    "Mythus": {
+      "Password": "{\"salt\": \"078dc860e92ad84af8e0e0696ab6ce4a\", \"hash\": \"923aed3465e305b5d9a093dd382e2fd5a7f6597c00d18a113984728f2408a53f\"}",
+      "Email": "enigmata@author.com",
+      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvZv98VStlXO94vlHUDna\n15Vza5P6BDC/FV/9vbuYxl11hjrC8btOYSjYf9aq2ojrzEgO4aunMPtVe+hRcroN\nQNR7yDBQmHTHwwADymhpmyhdQ2OFH6DqMtbMl6Lva1PzuBu97KEVaJdRnx8HhLP7\n5t1fkUwoeuNNQ4EmVxaRp/FTPIUzHBb1oIgMgnquZ+wyS+0oZOD5iRgVKrCKxO/E\nNwjyRZP0J3IiF8e9rZnEsJ5/vTpSW9C9jbHaR3DC4l0/F+u+UmI1Xz2xaZ4/0i9i\nvEM7QF1bJkWsVKMwxsIXN/6hiWhx0fB2dWdvXhSXxmBkPSR538Nz3iJqxy/sqdv4\nXQIDAQAB\n-----END PUBLIC KEY-----"
+    }
+  }
+}

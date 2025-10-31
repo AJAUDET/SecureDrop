@@ -21,10 +21,13 @@ if ! docker network ls | grep -q "$NETWORK_NAME"; then
     docker network create "$NETWORK_NAME"
 fi
 
-# Shared data + per-user auth directories
-SHARED_DATA="$(pwd)/users/data"
+# Shared data directory (global for all containers)
+SHARED_DATA="$(pwd)/shared_data"
+mkdir -p "$SHARED_DATA"
+
+# Per-user authentication directory
 USER_AUTH="$(pwd)/users/$USERNAME/auth"
-mkdir -p "$SHARED_DATA" "$USER_AUTH"
+mkdir -p "$USER_AUTH"
 
 CONTAINER_NAME="${USERNAME}_container"
 
@@ -34,9 +37,8 @@ if docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
     docker rm -f "$CONTAINER_NAME"
 fi
 
-echo "[INFO] Launching interactive container for user: $USERNAME"
+echo "[INFO] Launching SecureDrop container for user: $USERNAME"
 
-# Launch interactive SecureDrop session
 docker run -it \
     --name "$CONTAINER_NAME" \
     --network "$NETWORK_NAME" \

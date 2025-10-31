@@ -1,17 +1,18 @@
+import os
+import json
+import time
 import socket
 import threading
-import time
-import json
-import os
 
 DISCOVERY_FILE = "/app/data/discovered_users.json"
-NETWORK_PORT = 50000
-LISTEN_INTERVAL = 1
-ANNOUNCE_INTERVAL = 5
-
+CONTACTS_DIR = "/app/data/contacts"
+CHECK_INTERVAL = 5  # seconds
+PING_PORT = 50001
 file_lock = threading.Lock()
 
-def get_bridge_ip():
+
+def get_local_ip():
+    """Get this container’s IP on the bridge network."""
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
         s.connect(("8.8.8.8", 80))
@@ -22,59 +23,118 @@ def get_bridge_ip():
         s.close()
     return ip
 
-def listen_for_users():
+
+def get_user_contacts(username):
+    """Load the current user's contact list."""
+    contacts_file = os.path.join(CONTACTS_DIR, f"{username}.json")
+    if not os.path.exists(contacts_file):
+        return {}
+    try:
+        with open(contacts_file, "r") as f:
+            return json.load(f)
+    except json.JSONDecodeError:
+        return {}
+
+
+def is_mutual_contact(user_a, user_b):
+    """Check if both users have added each other."""
+    contacts_a = get_user_contacts(user_a)
+    contacts_b = get_user_contacts(user_b)
+    return user_b in contacts_a and user_a in contacts_b
+
+
+def ping_listener():
+    """Listen for ping requests and respond with pong."""
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.bind(("0.0.0.0", NETWORK_PORT))
-    sock.settimeout(LISTEN_INTERVAL)
-
-    discovered = {}
-
+    sock.bind(("0.0.0.0", PING_PORT))
     while True:
-        try:
-            data, addr = sock.recvfrom(1024)
-            try:
-                msg = json.loads(data.decode("utf-8"))
-                username = msg.get("username")
-                ip = msg.get("ip")
-                if username and ip:
-                    discovered[username] = ip
-                    with file_lock:
-                        os.makedirs(os.path.dirname(DISCOVERY_FILE), exist_ok=True)
-                        with open(DISCOVERY_FILE, "w") as f:
-                            json.dump(discovered, f, indent=2)
-            except json.JSONDecodeError:
-                continue
-        except socket.timeout:
-            continue
-        except Exception as e:
-            print(f"[WARN] Listener error: {e}")
+        data, addr = sock.recvfrom(1024)
+        if data == b"ping":
+            sock.sendto(b"pong", addr)
 
-def announce_presence(username):
+
+def ping_user(ip):
+    """Ping another container and wait for pong reply."""
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    local_ip = get_bridge_ip()
+    sock.settimeout(1)
+    try:
+        sock.sendto(b"ping", (ip, PING_PORT))
+        data, _ = sock.recvfrom(1024)
+        return data == b"pong"
+    except Exception:
+        return False
+    finally:
+        sock.close()
 
-    while True:
-        # Read discovered users
-        targets = {}
+
+def update_discovery(username, local_ip):
+    """Register or update this user's presence."""
+    os.makedirs(os.path.dirname(DISCOVERY_FILE), exist_ok=True)
+    with file_lock:
         if os.path.exists(DISCOVERY_FILE):
-            with file_lock:
+            try:
                 with open(DISCOVERY_FILE, "r") as f:
-                    try:
-                        targets = json.load(f)
-                    except json.JSONDecodeError:
-                        targets = {}
+                    data = json.load(f)
+            except json.JSONDecodeError:
+                data = {}
+        else:
+            data = {}
 
-        message = json.dumps({"username": username, "ip": local_ip}).encode("utf-8")
+        data[username] = {"ip": local_ip, "online": True}
 
-        for user, ip in targets.items():
-            if user != username:
-                try:
-                    sock.sendto(message, (ip, NETWORK_PORT))
-                except Exception as e:
-                    print(f"[WARN] Failed to announce to {user} ({ip}): {e}")
+        with open(DISCOVERY_FILE, "w") as f:
+            json.dump(data, f, indent=2)
 
-        time.sleep(ANNOUNCE_INTERVAL)
+
+def check_contacts(username):
+    """Continuously check mutual contacts for reachability."""
+    while True:
+        local_ip = get_local_ip()
+        update_discovery(username, local_ip)
+
+        # Load contacts + discovered users
+        my_contacts = get_user_contacts(username)
+        if not my_contacts:
+            time.sleep(CHECK_INTERVAL)
+            continue
+
+        with file_lock:
+            try:
+                with open(DISCOVERY_FILE, "r") as f:
+                    discovered = json.load(f)
+            except (FileNotFoundError, json.JSONDecodeError):
+                discovered = {}
+
+        changed = False
+
+        for contact_username, info in discovered.items():
+            if contact_username == username:
+                continue
+
+            # Only check mutual contacts
+            if not is_mutual_contact(username, contact_username):
+                continue
+
+            ip = info.get("ip")
+            if not ip:
+                continue
+
+            reachable = ping_user(ip)
+            if info.get("online") != reachable:
+                discovered[contact_username]["online"] = reachable
+                changed = True
+
+        if changed:
+            with file_lock:
+                with open(DISCOVERY_FILE, "w") as f:
+                    json.dump(discovered, f, indent=2)
+
+        time.sleep(CHECK_INTERVAL)
+
 
 def start_network(username):
-    threading.Thread(target=listen_for_users, daemon=True).start()
-    threading.Thread(target=announce_presence, args=(username,), daemon=True).start()
+    """Start all background threads for this user."""
+    local_ip = get_local_ip()
+    update_discovery(username, local_ip)
+    threading.Thread(target=ping_listener, daemon=True).start()
+    threading.Thread(target=check_contacts, args=(username,), daemon=True).start()
