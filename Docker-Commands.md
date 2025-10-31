@@ -6,9 +6,7 @@
   - Build Local Docker Image: docker build -t securedrop-docker_user_container .
   - Build the network: docker-compose up --build -d
   - Run Command: chmod +x launch_user.sh
-  - Run Undefined Image Instance: ./launch_user.sh
-  - Run Defined Image Instance: ./launch_user.sh <username>
-  - Auto Login To Instance: ./launch_user.sh <username> <password>
+  - Auto Login To Instance: ./launch_user.sh <username> <password> <email>
 
 # Once inside container
   - You will be logged into a bash terminal
