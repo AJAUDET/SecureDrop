@@ -28,5 +28,15 @@
         "added_by": "Nous",
         "contact_full_name": "Mythus The Enigmata",
         "contact_email": "enigmata@author.com"
+    },
+    "Nanook:Mythus": {
+        "added_by": "Nanook",
+        "contact_full_name": "Mythus The Enigmata",
+        "contact_email": "enigmata@author.com"
+    },
+    "Mythus:Nanook": {
+        "added_by": "Mythus",
+        "contact_full_name": "Nanook The Destruction",
+        "contact_email": "ruin@author.com"
     }
 }

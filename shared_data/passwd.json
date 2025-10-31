@@ -19,6 +19,11 @@
       "Password": "{\"salt\": \"403dd1ccac64c74f6d0094564e979758\", \"hash\": \"6a8f2cba4d1ed38592671e3498f52d323609ec42aa509a8124c1d615c53200e5\"}",
       "Email": "genius@society.com",
       "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmiVxBNYLRteGNJ3eISsc\n86YmOTvf/N8wLzsFJjwiMk8Ck7KvHvjDBhDH92jp7L3fJw/HTdt6FsCeyg49GbI1\ntVw7YFSyH+fiJXfVw2E9IeTtx4LxGNJYOG8DDIxtQc9iYt55FmZpMerWHgTkxN4s\nqsX1ZVKWknc8EjA0Z8/Xt/oHm4wfeQKHOP38PQ9+lPRuMtClWtYCJOThzy3NyLC6\neskAKRXwWS+HixUhd2r/jWmOLb9fEVPbVZpFn/4k1pHlYQK+ETiffq0YZEGikEA6\nWgxZEL0I40DI6vPmjk4HRw1/HwBcpghCDGTjxEiiFqeElvR46T340KgFV1BTlGKo\nJQIDAQAB\n-----END PUBLIC KEY-----"
+    },
+    "Nanook": {
+      "Password": "{\"salt\": \"f4b807df8205b2848bcab92f8b082a3d\", \"hash\": \"beb732e360ae39fab3d6283d1470886319f940487571e07fb0292934d103a699\"}",
+      "Email": "ruin@author.com",
+      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAo9QiW1f2JxnMQgGaNnO7\nJtBqrEIKOc/j6q0I9JogUT1RuAqnh2dN3LEx8efLuYIoeC69/mnPYKXNUGXQUQr4\nuTsPVdTtr6dXmeDZQCVGo54fuY5tQcgdbstaN7sKYsxmPpv/RqD6Fj8wbJxsPvzb\n+DkG2CitJ6KwETLIwYd+7peJuW1aZ3uYCxd6FVFkI92hAkfzkKNisX3ELYmpTskB\nDu+fTo4X7xNinKWpQvrUG49cHP2O/VVEYWv4Lvv8XhRbdMNmCmBy8XU6QYtqOeNv\n7fCrQ96lPFyoDB/9o/9P4iGGY0i+mXlsafcdB+uaF9156LSp3xEUcsXmH4gWubjq\nFQIDAQAB\n-----END PUBLIC KEY-----"
     }
   }
 }

@@ -1,9 +1,9 @@
 import os
 import json
 
-CONTACTS_DIR = "/app/data/contacts"
+CONTACTS_DIR = "/app/data/shared/contacts"
 MASTER_CONTACTS_FILE = os.path.join(CONTACTS_DIR, "admin_master_contacts.json")
-DISCOVERY_FILE = "/app/data/discovered_users.json"
+DISCOVERY_FILE = "/app/data/shared/discovered_users.json"
 
 # Ensure directories exist
 os.makedirs(CONTACTS_DIR, exist_ok=True)

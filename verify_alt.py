@@ -4,7 +4,7 @@ import json
 import pwinput
 import password
 
-def verify(user, pwd, data_dir="/app/data"):
+def verify(user, pwd, data_dir="/app/data/shared"):
     passwd_file = os.path.join(data_dir, "passwd.json")
 
     if not os.path.exists(passwd_file):

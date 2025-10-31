@@ -29,6 +29,10 @@ mkdir -p "$SHARED_DATA"
 USER_AUTH="$(pwd)/users/$USERNAME/auth"
 mkdir -p "$USER_AUTH"
 
+# Per-user private data directory
+USER_DATA="$(pwd)/users/$USERNAME/data"
+mkdir -p "$USER_DATA"
+
 CONTAINER_NAME="${USERNAME}_container"
 
 # Remove old container if exists
@@ -43,9 +47,10 @@ docker run -it \
     --name "$CONTAINER_NAME" \
     --network "$NETWORK_NAME" \
     -v "$USER_AUTH:/app/auth" \
-    -v "$SHARED_DATA:/app/data" \
+    -v "$SHARED_DATA:/app/data/shared" \
+    -v "$USER_DATA:/app/data/private" \
     -e USER_NAME="$USERNAME" \
     -e USER_PASSWORD="$PASSWORD" \
     -e USER_EMAIL="$EMAIL" \
     "$IMAGE_NAME" \
-    bash -c "python3 securedrop.py; exec bash"
+    bash -c "python3 securedrop.py; cd /app/data/private; exec bash"

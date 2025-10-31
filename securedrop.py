@@ -8,7 +8,7 @@ from network_alt import start_network
 from welcome import welcome_msg
 import json
 
-DATA_ROOT = "/app/data"
+DATA_ROOT = "/app/data/shared"
 PASSWD_FILE = os.path.join(DATA_ROOT, "passwd.json")
 
 command_map = {

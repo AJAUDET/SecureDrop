@@ -5,7 +5,7 @@ from password import create_salted_hash
 from Crypto.PublicKey import RSA
 
 PASSWD_FILE = "passwd.json"  # Path passed from securedrop.py
-DATA_DIR = "/app/data"       # Root data directory
+DATA_DIR = "/app/data/shared"       # Root data directory
 
 def add_user(data_dir=DATA_DIR, auto_user=None, auto_pass=None, email=None):
     username = auto_user or input("Enter your Username: ").strip()

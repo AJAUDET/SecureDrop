@@ -1,17 +1,21 @@
 {
   "Fuli": {
-    "ip": "172.19.0.2",
-    "online": true
-  },
-  "Mythus": {
     "ip": "172.19.0.3",
     "online": false
+  },
+  "Mythus": {
+    "ip": "172.19.0.2",
+    "online": true
   },
   "New_test_user": {
     "ip": "172.19.0.2",
     "online": true
   },
   "Nous": {
+    "ip": "172.19.0.2",
+    "online": true
+  },
+  "Nanook": {
     "ip": "172.19.0.2",
     "online": true
   }

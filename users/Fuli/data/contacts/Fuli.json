@@ -2,5 +2,9 @@
     "Mythus": {
         "full_name": "Mythus the Enigmata",
         "email": "enigmata@author.com"
+    },
+    "Nous": {
+        "full_name": "Nous The Erudition",
+        "email": "genius@society.com"
     }
 }

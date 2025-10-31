@@ -4,8 +4,8 @@ import time
 import socket
 import threading
 
-DISCOVERY_FILE = "/app/data/discovered_users.json"
-CONTACTS_DIR = "/app/data/contacts"
+DISCOVERY_FILE = "/app/data/shared/discovered_users.json"
+CONTACTS_DIR = "/app/data/shared/contacts"
 CHECK_INTERVAL = 5  # seconds
 PING_PORT = 50001
 file_lock = threading.Lock()
