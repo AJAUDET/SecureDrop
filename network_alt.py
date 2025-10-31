@@ -124,6 +124,21 @@ def check_contacts(username):
 
         time.sleep(CHECK_INTERVAL)
 
+def remove_from_discovery(username):
+    with file_lock:
+        if not os.path.exists(DISCOVERY_FILE):
+            return
+        try:
+            with open(DISCOVERY_FILE, "r") as f:
+                data = json.load(f)
+        except json.JSONDecodeError:
+            data = {}
+
+        if username in data:
+            del data[username]
+            with open(DISCOVERY_FILE, "w") as f:
+                json.dump(data, f, indent=2)
+            print(f"[INFO] {username} removed from discovered users.")
 
 def start_network(username):
     local_ip = get_local_ip()

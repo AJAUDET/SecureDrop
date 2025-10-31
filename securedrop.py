@@ -1,12 +1,15 @@
 import os
 import sys
 import pwinput
+import json
+import atexit
+import signal
+import time
 import user_alt as user
 import verify_alt as verify
 from contactmanage_alt import add_contact, list_contacts, verify_contact, admin_list, admin_clear
-from network_alt import start_network
+from network_alt import start_network, remove_from_discovery
 from welcome import welcome_msg
-import json
 
 DATA_ROOT = "/app/data/shared"
 PASSWD_FILE = os.path.join(DATA_ROOT, "passwd.json")
@@ -21,17 +24,27 @@ command_map = {
     "exit": lambda _: sys.exit(0)
 }
 
+def goodbye_msg(username):
+    print(f"\n[INFO] Logging out {username}...")
+    remove_from_discovery(username)
+    print("[INFO] You have been removed from discovered users.")
+    time.sleep(0.5)
+    sys.exit(0)
+
 def main(username):
     while True:
-        cmd = input(f"{username}@securedrop.com: ").strip()
-        if cmd in command_map:
-            command_map[cmd](username)
-        elif cmd == "help":
-            print("Available commands: add, list, verify, clear, exit")
-            if username.lower() == "admin":
-                print("admin_list, admin_clear")
-        else:
-            print("Unknown command. Type 'help' for a list of commands.")
+        try:
+            cmd = input(f"{username}@securedrop.com: ").strip()
+            if cmd in command_map:
+                command_map[cmd](username)
+            elif cmd == "help":
+                print("Available commands: add, list, verify, clear, exit")
+                if username.lower() == "admin":
+                    print("admin_list, admin_clear")
+            else:
+                print("Unknown command. Type 'help' for a list of commands.")
+        except KeyboardInterrupt:
+            goodbye_msg(username)
 
 if __name__ == "__main__":
     os.makedirs(DATA_ROOT, exist_ok=True)
@@ -92,6 +105,10 @@ if __name__ == "__main__":
     user_dir = os.path.join(DATA_ROOT, username)
     for subdir in ["contacts", "public_keys", "private_keys"]:
         os.makedirs(os.path.join(user_dir, subdir), exist_ok=True)
+
+    # Register exit
+    atexit.register(remove_from_discovery, username)
+    signal.signal(signal.SIGTERM, lambda *_: goodbye_msg(username))
 
     # Start broadcasting/listening
     start_network(username)
