@@ -4,30 +4,32 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: python3 securedrop.py host
+    environment:
+      - USER_NAME=host
+      - USER_PASSWORD=hostpass
+      - USER_EMAIL=host@example.com
     volumes:
-      - ./auth:/app/auth        # bind mount to host folder ./auth
-      - ./data:/app/data        # bind mount to host folder ./data
-    stdin_open: true
-    tty: true
-    restart: always
+      - ./data:/app/data
+    command: python3 securedrop.py host
     networks:
       - securedrop_bridge
+    restart: always
 
   receiver:
     container_name: receiver_container
     build:
       context: .
       dockerfile: Dockerfile
-    command: python3 securedrop.py receiver
+    environment:
+      - USER_NAME=receiver
+      - USER_PASSWORD=receiverpass
+      - USER_EMAIL=receiver@example.com
     volumes:
-      - ./auth:/app/auth
       - ./data:/app/data
-    stdin_open: true
-    tty: true
-    restart: always
+    command: python3 securedrop.py receiver
     networks:
       - securedrop_bridge
+    restart: always
 
 networks:
   securedrop_bridge:

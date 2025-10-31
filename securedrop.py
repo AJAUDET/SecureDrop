@@ -4,7 +4,7 @@ import pwinput
 import user_alt as user
 import verify_alt as verify
 from contactmanage_alt import add_contact, list_contacts, verify_contact, admin_list, admin_clear
-from network_alt import start_network, print_discovered_loop
+from network_alt import start_network
 from welcome import welcome_msg
 import json
 
@@ -95,7 +95,6 @@ if __name__ == "__main__":
 
     # Start broadcasting/listening
     start_network(username)
-    print_discovered_loop()
 
     # Welcome message and main loop
     welcome_msg(username)

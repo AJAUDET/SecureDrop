@@ -1,3 +1,14 @@
 {
-  "Users": {}
+  "Users": {
+    "receiver": {
+      "Password": "{\"salt\": \"1d08652eea1038a1844911d08e49de59\", \"hash\": \"b27e792b05aac3431de1c07bbafba62536193dbafb64e03a901c4cb717a68fd8\"}",
+      "Email": "receiver@example.com",
+      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAy4FgZxaQN6m9RFGarde0\nuF8k9RZyoi0smxTIz5D/8ZAeaJDyRQ053+k6bw1EYP/gDAvhwPFvqxpa+PwFrWvZ\nSOAP8zoD4P/8aS7wmviKTuDXwu7ywVd6+rAQ0xN8oddB3az2hgP/hGjqDO3ZT4j2\nz08ng4d2UscRZe2gbwgmd1KKXP6Qzpaf50TJQM4o93m1Tiebyfyl3KcU6quEYxgq\nqDtk+IjPTNi9U2TK048D6Lf8GIda+sb6VqPS3JQdasl6Arm0RWXewrbAk+B/Jlqc\nDPaprwlZzcLLglUnj/bUA3pKKC+gMqaAnQHMZ3dLYerxTRdYn37j9CZiNja+Lj7I\nMwIDAQAB\n-----END PUBLIC KEY-----"
+    },
+    "host": {
+      "Password": "{\"salt\": \"e98d8dbc7fa3751d05a08019402c92e4\", \"hash\": \"427f528a72a32b73327eeaa6c785a4a565e97ea784d0772ab9b49f32f690c149\"}",
+      "Email": "host@example.com",
+      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyO31KSK5F2BkmqPPynDk\noAWSL/G0gnGKwgMHecYiPV8i+XMGl9/6DjhySknHys2LdF1ytmt344fhCntWVbDm\n5PbJyTrmKmj8OeHOGgT+jsMtBnnzvD2Qg9R01KDvSA264cepXS7jto5XDFdi1waF\nVgtg8LwE+4vmLJhxL93g/v7j0seoVv9554tpTD6dtj6s7V556+v3R8dB7z/9D+wy\nSh/NQaKF7yWNxZN/urexR0HKsUIp2VI8glryF29El9robkdGVsu9454FWbzKDIwy\ncLnaL4SUqrMebeCTYF+aHimo3wjDWJdrlvJzECCUoiLKVZKFfon1MKnJjpkfOemk\ndQIDAQAB\n-----END PUBLIC KEY-----"
+    }
+  }
 }
