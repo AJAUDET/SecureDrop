@@ -82,6 +82,8 @@ def add_user():
             data = private_key_str
             print(f"{data}", file=outF)
 
+        return username
+
         print("User created successfully\n")
     except json.JSONDecodeError:
         print("Error: Corrupted database file")
