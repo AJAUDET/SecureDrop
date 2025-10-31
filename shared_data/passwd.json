@@ -24,6 +24,11 @@
       "Password": "{\"salt\": \"f4b807df8205b2848bcab92f8b082a3d\", \"hash\": \"beb732e360ae39fab3d6283d1470886319f940487571e07fb0292934d103a699\"}",
       "Email": "ruin@author.com",
       "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAo9QiW1f2JxnMQgGaNnO7\nJtBqrEIKOc/j6q0I9JogUT1RuAqnh2dN3LEx8efLuYIoeC69/mnPYKXNUGXQUQr4\nuTsPVdTtr6dXmeDZQCVGo54fuY5tQcgdbstaN7sKYsxmPpv/RqD6Fj8wbJxsPvzb\n+DkG2CitJ6KwETLIwYd+7peJuW1aZ3uYCxd6FVFkI92hAkfzkKNisX3ELYmpTskB\nDu+fTo4X7xNinKWpQvrUG49cHP2O/VVEYWv4Lvv8XhRbdMNmCmBy8XU6QYtqOeNv\n7fCrQ96lPFyoDB/9o/9P4iGGY0i+mXlsafcdB+uaF9156LSp3xEUcsXmH4gWubjq\nFQIDAQAB\n-----END PUBLIC KEY-----"
+    },
+    "Alice": {
+      "Password": "{\"salt\": \"5847c83cbe434b8aad7b86b737a31462\", \"hash\": \"60bbdbec06f096152aa1bddebf75b481ceafa91777939812f4f18aec1683e7e4\"}",
+      "Email": "alice@wonderland.com",
+      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuZ0J+s+owLsOQZ9mZgqT\nyvIF807SR54HCyy8sLH2D9dkZVmu+X6zjtyFex1RPfya7BT3m6nkUPt76wf+dMqy\nZSs6AqMvr/lMlmmvEyB8N04j4bc1do+2GHmt1nsqD/oEtoGMWQigQuC6RFaTlsgU\nu5i8ejIdU7LPdCj1qF/AVG2H9S6aXnFf0vdhOveKB/aUNHgWG/LAzLej3F4cxCn6\n5Uv4NHgzxyh9NP7xSm/xLqdB11l9auIfKYtqqs8xSiX1H9ZhMMtr+/TX5sMhK904\nK4kN3BJvnxd+7AFE7v80irEBj0AIuNQRR2A6eReggKgF8IPS/Y9J+gtUyOgxKQxh\nNQIDAQAB\n-----END PUBLIC KEY-----"
     }
   }
 }
