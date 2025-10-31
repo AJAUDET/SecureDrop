@@ -1,0 +1,9 @@
+{
+  "Users": {
+    "Mythus": {
+      "Password": "{\"salt\": \"a444365f6df28d452846837cb61d339b\", \"hash\": \"b3cf0f38adf788cdc5368c5c4e599537369773d86f8998c5603c57fbfe7d8bc8\"}",
+      "Email": "enigmata@author.com",
+      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAt4DaIX08krv67q34kzNW\nsc4fEKI8QmhxxQzWBq05KH+QPPFb1oAdVdFEZlM822LuKP9TgcjDNRzgPtEkdThq\nYwoyygb7HMAT2+VNQB7drh39kStB1ZtkUDYq5Q99+PtRhY5NgvDwnGEnTx2BXfYy\ny+2Yl45auNPYihZjQpSqCVsOydmIUGGackNezen/okO2JjbzFUHi/14cgzcstWuQ\nIWDe8n7I4rIEpfLJ57askPXbHg12MvaskgeBPkJMgd/ETpJGpMo3lJPD3jbzY57z\nx12/upmibNcUV/196G4HjJIdje36L0Daxx+y03RHfRuS8bcwdFLTE7cUiUX2oHKF\nDwIDAQAB\n-----END PUBLIC KEY-----"
+    }
+  }
+}

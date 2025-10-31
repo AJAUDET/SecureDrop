@@ -15,6 +15,7 @@ RUN apt-get update && \
         git \
         nano \
         iputils-ping \
+        net-tools \
         curl && \
     rm -rf /var/lib/apt/lists/*
 

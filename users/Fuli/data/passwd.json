@@ -1,0 +1,9 @@
+{
+  "Users": {
+    "Fuli": {
+      "Password": "{\"salt\": \"f70b120630d5ca1b5c7ac43ade420a27\", \"hash\": \"25a7758e55009198b6df340a8e18cd08ed29b48aebdfa25cb8fe9193c28f7881\"}",
+      "Email": "garden@recollection.com",
+      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsdsuNIIcXzVbcDOzp3lj\nMswaCAXisBD0rdmfHleftJWzgtznXU/0NeXIMNpA+JxtAzy/21HDEkgkMRPOs5US\nfjg5EHVJbBjafyGKVdwZm7g0BnsixB4sFi93nWmZqk1i/mp0aN62eKn6joisujOI\ngXNwUtSYbjUFsi8cWzal33fF9vEGSkcnE+IZYaUBeNcOQeNc/foJFTdgqLGycYVY\nOLfvg1jbFsg/ChQHNsPg0zxKNFqbckELPnM/mw+cBG6+w4LssPG0WJnxhfUIghwW\n1G1I4rW7RpnRe7aXPmi8B3RYUpxttYEHHycvm/ug28X4tX6dqNBI0HUvrOcqVXhb\nIwIDAQAB\n-----END PUBLIC KEY-----"
+    }
+  }
+}
