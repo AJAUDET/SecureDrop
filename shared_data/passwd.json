@@ -9,6 +9,11 @@
       "Password": "{\"salt\": \"078dc860e92ad84af8e0e0696ab6ce4a\", \"hash\": \"923aed3465e305b5d9a093dd382e2fd5a7f6597c00d18a113984728f2408a53f\"}",
       "Email": "enigmata@author.com",
       "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvZv98VStlXO94vlHUDna\n15Vza5P6BDC/FV/9vbuYxl11hjrC8btOYSjYf9aq2ojrzEgO4aunMPtVe+hRcroN\nQNR7yDBQmHTHwwADymhpmyhdQ2OFH6DqMtbMl6Lva1PzuBu97KEVaJdRnx8HhLP7\n5t1fkUwoeuNNQ4EmVxaRp/FTPIUzHBb1oIgMgnquZ+wyS+0oZOD5iRgVKrCKxO/E\nNwjyRZP0J3IiF8e9rZnEsJ5/vTpSW9C9jbHaR3DC4l0/F+u+UmI1Xz2xaZ4/0i9i\nvEM7QF1bJkWsVKMwxsIXN/6hiWhx0fB2dWdvXhSXxmBkPSR538Nz3iJqxy/sqdv4\nXQIDAQAB\n-----END PUBLIC KEY-----"
+    },
+    "New_test_user": {
+      "Password": "{\"salt\": \"bc8be92baee3666a98315de57bbb65fa\", \"hash\": \"5dde148e9be36a56e1468fef927eaa9b8090fd06396a28153b8e183e9708f6d3\"}",
+      "Email": "test@test_user.com",
+      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlw38/+d1TgyOzf4vpWjZ\n7+hEOntfTG2ouhGbXw0nLJblf3A6TTMq7vFMCJcfGM/fZ5SOKGPhdz3wjN8j1kKz\n/Cf2gC43Nk1YIwoXxUXHrNrfM/pFPj3XbEZlrsjbNX/iYtSlqZqQhljEOT/m4mF7\n+ciUqhWveTYDw/zeVZasJRH9kbjlkGwFUeGW6asjasYL5LWDNuD2vPxYtrsiCJo0\n1Z/NUH+Ou1Clfqg5kN0P+amS554rhUQShE/IoTFNpO60LATEosVi/adpg0Cqo+qh\n177pHTARS2cF40RrEIhTS3jHPQho9ExDLPDc40dVsYMpXZ7H0cnCjnWyZqK2GYfQ\neQIDAQAB\n-----END PUBLIC KEY-----"
     }
   }
 }
