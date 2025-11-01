@@ -29,6 +29,11 @@
       "Password": "{\"salt\": \"5847c83cbe434b8aad7b86b737a31462\", \"hash\": \"60bbdbec06f096152aa1bddebf75b481ceafa91777939812f4f18aec1683e7e4\"}",
       "Email": "alice@wonderland.com",
       "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuZ0J+s+owLsOQZ9mZgqT\nyvIF807SR54HCyy8sLH2D9dkZVmu+X6zjtyFex1RPfya7BT3m6nkUPt76wf+dMqy\nZSs6AqMvr/lMlmmvEyB8N04j4bc1do+2GHmt1nsqD/oEtoGMWQigQuC6RFaTlsgU\nu5i8ejIdU7LPdCj1qF/AVG2H9S6aXnFf0vdhOveKB/aUNHgWG/LAzLej3F4cxCn6\n5Uv4NHgzxyh9NP7xSm/xLqdB11l9auIfKYtqqs8xSiX1H9ZhMMtr+/TX5sMhK904\nK4kN3BJvnxd+7AFE7v80irEBj0AIuNQRR2A6eReggKgF8IPS/Y9J+gtUyOgxKQxh\nNQIDAQAB\n-----END PUBLIC KEY-----"
+    },
+    "Aha": {
+      "Password": "{\"salt\": \"69f3c97d2fbb3adaf638c8933863bf6a\", \"hash\": \"6288f1d638eaba955c934e68b57c7bce25483c14354e86ec09f3012b4fce6598\"}",
+      "Email": "masked@fools.com",
+      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlL2ImTZ1wEbuhaUo9BYP\niB1fLCKeiEgpLzoS2wuYiZyMRIb1XlWeh80NT+HGFb9OBXecfRn1xio6Hzgp8yxC\nEZTymSWWFPNOekKWPZlWxhDpWRPXHeGj0l+cVC0yiWTKjaZw0660kaLLg9Og5Hs1\npEU9JIBo3UXgZGwPzQOf9UNW5APQAoIyeC/jxJroYcsKBBQJIeWniKEylObWiOuj\nX018jIcSzPyDVzo5lxb/ZnrH81Scp8AmVFGPy2vUzOgFf+CGGY0QOx1UxuQ9RRcU\nDoVNUiW6UH1CUij/NT7gIkL0bu+7X1GqqHWvPa6MF0XHAdgEqYWZG8OREHSDpokF\nxwIDAQAB\n-----END PUBLIC KEY-----"
     }
   }
 }
