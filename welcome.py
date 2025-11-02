@@ -1,9 +1,10 @@
 from datetime import datetime
 import pytz
-import pyfiglet as figlet
+from pyfiglet import figlet_format
+from termcolor import colored
 
-PROGRAM_NAME = "Secure Drop"
-FONT = figlet.Figlet(font='utopiab')
+TEXT = "Secure Drop"
+FIGLET = figlet_format(text=TEXT, font='utopiab')
 
 # --- I want to use this in the future probs ---
 ART = """
@@ -23,7 +24,7 @@ ART = """
 def welcome_msg(username):
     print("\n\n")
     print("-----------------------------------------------------------------------------------------------")
-    print(FONT.renderText(PROGRAM_NAME))
+    print(FIGLET)
     print("-----------------------------------------------------------------------------------------------")
     print(f"\tHello {username} Welcome to Secure Drop\t\t")
     print("\tThis program is designed to transfer files between you and your contacts, given that they are also online\n\n")
