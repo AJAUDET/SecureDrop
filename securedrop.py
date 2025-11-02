@@ -7,7 +7,7 @@ import signal
 import time
 import user_alt as user
 import verify_alt as verify
-from contactmanage_alt import add_contact, list_contacts, verify_contact, admin_list, admin_clear
+from contactmanage_alt import add_contact, list_contacts, verify_contact, admin_list, admin_clear, remove_contact
 from network_alt import start_network, remove_from_discovery
 from welcome import welcome_msg
 
@@ -19,6 +19,7 @@ command_map = {
     "add": add_contact,
     "list": list_contacts,
     "verify": verify_contact,
+    "remove": remove_contact,
     "admin_list": admin_list,
     "admin_clear": admin_clear,
     "clear": lambda _: os.system("clear"),
@@ -39,7 +40,7 @@ def main(username):
             if cmd in command_map:
                 command_map[cmd](username)
             elif cmd == "help":
-                print("Available commands: add, list, verify, clear, exit")
+                print("Available commands: add, list, verify, remove, clear, exit")
                 if username.lower() == "admin":
                     print("admin_list, admin_clear")
             else:

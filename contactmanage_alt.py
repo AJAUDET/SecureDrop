@@ -14,7 +14,6 @@ if not os.path.exists(MASTER_CONTACTS_FILE):
 def get_user_contacts_file(username):
     return os.path.join(CONTACTS_DIR, f"{username}.json")
 
-
 def add_contact(username):
     contacts_file = get_user_contacts_file(username)
 
@@ -55,6 +54,49 @@ def add_contact(username):
     with open(MASTER_CONTACTS_FILE, "w") as f:
         json.dump(master_contacts, f, indent=4)
 
+def remove_contact(username):
+    contacts_file = get_user_contacts_file(username)
+
+    if not os.path.exists(contacts_file):
+        print("You have no contacts to remove.")
+        return
+
+    with open(contacts_file, "r") as f:
+        contacts = json.load(f)
+
+    if not contacts:
+        print("Your contact list is empty.")
+        return
+
+    contact_username = input("Enter the username of the contact to remove: ").strip()
+
+    if contact_username not in contacts:
+        print(f"Contact '{contact_username}' not found in your contacts.")
+        return
+
+    confirm = input(f"Are you sure you want to remove '{contact_username}'? (y/n): ").strip().lower()
+    if confirm != "y":
+        print("Operation cancelled.")
+        return
+
+    # Remove from user's contact list
+    del contacts[contact_username]
+
+    with open(contacts_file, "w") as f:
+        json.dump(contacts, f, indent=4)
+
+    print(f"Contact '{contact_username}' removed from your personal contacts.")
+
+    # Remove from admin master log if it exists
+    if os.path.exists(MASTER_CONTACTS_FILE):
+        with open(MASTER_CONTACTS_FILE, "r") as f:
+            master_contacts = json.load(f)
+
+        master_key = f"{username}:{contact_username}"
+        if master_key in master_contacts:
+            del master_contacts[master_key]
+            with open(MASTER_CONTACTS_FILE, "w") as f:
+                json.dump(master_contacts, f, indent=4)
 
 def list_contacts(username):
     contacts_file = get_user_contacts_file(username)
