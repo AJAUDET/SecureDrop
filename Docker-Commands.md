@@ -6,10 +6,8 @@
   - Build Local Docker Image: docker build -t securedrop-docker_user_container .
   - Run Command: chmod +x launch_user.sh
   - Auto Login To Instance: ./launch_user.sh <username> <password> <email>
-  - Auto Register New User: ./launch_user.sh <username>
+  - Auto Register New User: ./launch_user.sh --init
     - You will be prompted for a password and email
-   - Auto Register New User: ./launch_user.sh <username> <password>
-    - You will be prompted for an email
 
 # Once inside container
   - You will be logged into an instance of securedrop and be fully registered
