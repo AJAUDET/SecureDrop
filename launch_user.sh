@@ -10,9 +10,16 @@ EMAIL="$3"
 IMAGE_NAME="securedrop-docker_user_container"
 NETWORK_NAME="securedrop_bridge"
 
-if [ -z "$USERNAME" ] || [ -z "$PASSWORD" ] || [ -z "$EMAIL" ]; then
-    echo "Usage: $0 <username> <password> <email>"
-    exit 1
+if [ "$1" == "--init" ]; then
+    MODE="init"
+    echo "[INFO] Launching uninitialized SecureDrop container..."
+else
+    if [ -z "$USERNAME" ] || [ -z "$PASSWORD" ] || [ -z "$EMAIL" ]; then
+        echo "Usage:"
+        echo "  $0 <username> <password> <email>"
+        echo "  $0 --init"
+        exit 1
+    fi
 fi
 
 # Create Docker network if missing
@@ -24,6 +31,27 @@ fi
 # Shared data directory (global for all containers)
 SHARED_DATA="$(pwd)/shared_data"
 mkdir -p "$SHARED_DATA"
+
+if [ "$MODE" == "init" ]; then
+    CONTAINER_NAME="securedrop_uninitialized"
+
+    # Remove old container if exists
+    if docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
+        echo "[INFO] Removing existing uninitialized container..."
+        docker rm -f "$CONTAINER_NAME"
+    fi
+
+    docker run -it \
+        --name "$CONTAINER_NAME" \
+        --network "$NETWORK_NAME" \
+        -v "$SHARED_DATA:/app/data/shared" \
+        "$IMAGE_NAME" \
+        bash -c "echo '[INFO] Booted uninitialized container. Run python3 securedrop.py to create/login a user.'; exec bash"
+
+    echo "[INFO] Uninitialized container session ended."
+    docker rm -f "$CONTAINER_NAME" >/dev/null 2>&1 || true
+    exit 0
+fi
 
 # Per-user authentication directory
 USER_AUTH="$(pwd)/users/$USERNAME/auth"

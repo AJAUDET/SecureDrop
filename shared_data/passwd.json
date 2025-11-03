@@ -44,6 +44,16 @@
       "Password": "{\"salt\": \"27c05568e88a8c9c67e4b9eae1fcb53f\", \"hash\": \"c9bb8e834b224f4ad446ecae2fc065260e0f047b14d0c1c5f1dcab1f268d0170\"}",
       "Email": "test@user.com",
       "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAl3+lR2yD/HEHY7vnNP7D\nF5HScKPGakBrXgm7UBsDh0rWavL4iMmiHlSC6DIM083zuQzWCyVIAY+XpE7qS3rp\nALHypsJ27u1KX2H2rzw9gWi/uoHtgo3SV5WoHzYm25mEoIC8QdjXO8MRokDDSXF8\nJBAdL0dywDQcYSgz3xJuKCKDpNThfQfbgIz0a6AsiRzrQdzdZpErM/YxoLwx7a/+\nJyMMo8IovnC4k/rBBTsIHTVnOYJ6I2IXjGX9K14KVSm/vfB2FsTFAg6vBS79BX6c\nbLOOhkOjMGa11sicDzGL2RBSAeQzkfPlSztIVJ9f3YBIISWW4xHTZ1QoxVMqDP3p\nHwIDAQAB\n-----END PUBLIC KEY-----"
+    },
+    "Test_User_New": {
+      "Password": "{\"salt\": \"9c4d2065a74f4d4ef9525ee2f483a578\", \"hash\": \"8fb98fefd09f06d3912c0d1141bb5601862ff51cf82dcec5c6d8075efd59e8ef\"}",
+      "Email": "test@mail_user.com",
+      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA47P5mayNADkbios9XKJ+\niR62azMx+D9PHTzqhzF59IvJIiMIn+rQmT1jClZ+CWXNLi1t2kWjj3VPNzb63NhR\nDIihvAcAIVlmUgb92HW71IdgkJqrxPkO/l/2DXyIScBz6Fdh8rWlDt2HYHX+GOI3\ntB0N0s0hNykAtzZVEGZ/NU8GLzpNS+acof13FYCtnSdlShxHuTh8cjx6bsk9OvCI\nzwLrbijfoF/fHQCLGOS0q7PcJJqJZM6omGl/iGXMja9dFBqWj/aF0weBTvUdT5le\nzIgQA0NXTt8CjwBIsZVBZ7Nv2vHzIzJgziP5GAtYEoBHh9mNqvc0fISXBFvittYy\nCwIDAQAB\n-----END PUBLIC KEY-----"
+    },
+    "Testing_new": {
+      "Password": "{\"salt\": \"4779d77152c05f1ffb03493ee6fb0c7a\", \"hash\": \"db0b82ae74fd5150b35a9dab71f26599af1b019f7c4cf7d7ad16599bdced00ca\"}",
+      "Email": "testing@new.com",
+      "Public Key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuSopVumWf5WrbeaC1Z8Y\nuc+9WG5bAAL/wIe2odM2bTZ7A3w88jdKsRx+wgWy+HclqE4LlsgxWGJkPYpgOxfB\nrgSpiIasDkOLOR/6bxy3WgDei/8r5iMBt8Kc4GY9pgMk3XEOUNdbhQPYwVIetNR4\nydPYoEYQnrqOTQj43mgQDIWyth9a7SFh1JoL7kWz0INZLxMXhQwJSIU0nLQsyqKs\nGbuLFYUFnWn9QmVHO4hzv6dhbruMI9KYMTqsYZ3naSgCr2AnFUfRn7WFpo0zMaKw\nAsg0QBUNqJvd60gbw7na1svmh9PCS+ccdPJ5eUABEXL4IuPj5+B/MKnWT7OB4jGD\nCQIDAQAB\n-----END PUBLIC KEY-----"
     }
   }
 }

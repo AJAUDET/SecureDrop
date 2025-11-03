@@ -74,16 +74,6 @@ if __name__ == "__main__":
         password_env = password_env or pwinput.pwinput(f"Enter password for {username}: ", mask="*")
         verify.verify(username, password_env, data_dir=DATA_ROOT)
 
-    # --- Automated user creation if username does not exist ---
-    elif username and username not in data["Users"]:
-        password_env = password_env or pwinput.pwinput(f"Create password for {username}: ", mask="*")
-        if not email_env:
-            email_env = input(f"Enter email for {username}: ").strip()
-            while not email_env:
-                print("Email cannot be empty.")
-                email_env = input(f"Enter email for {username}: ").strip()
-        user.add_user(data_dir=DATA_ROOT, auto_user=username, auto_pass=password_env, email=email_env)
-
     # --- Interactive login/register ---
     else:
         action = input("Do you want to (l)ogin or (r)egister? [l/r]: ").strip().lower()
