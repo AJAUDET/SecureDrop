@@ -1,5 +1,4 @@
 import socket
-import struct
 import threading
 import json
 import os
@@ -9,12 +8,12 @@ DATA_DIR = "/app/data/shared"
 DISCOVERY_FILE = os.path.join(DATA_DIR, "discovered_users.json")
 CONTACTS_DIR = os.path.join(DATA_DIR, "contacts")
 
-MULTICAST_GROUP = "224.1.1.1"
+BROADCAST_ADDR = "<broadcast>"  # broadcast to local LAN
 PORT = 50000
-TTL = 2  # LAN hop count
 
 RUNNING = True
 file_lock = threading.Lock()
+
 
 def _load_json(path):
     if not os.path.exists(path):
@@ -25,11 +24,13 @@ def _load_json(path):
     except json.JSONDecodeError:
         return {}
 
+
 def _save_json(path, data):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with file_lock:
         with open(path, "w") as f:
             json.dump(data, f, indent=2)
+
 
 def _get_user_contacts(username):
     """Return a set of usernames this user has as contacts."""
@@ -43,30 +44,31 @@ def _get_user_contacts(username):
     except json.JSONDecodeError:
         return set()
 
+
 def broadcast_presence(username):
-    """Send multicast beacon announcing this user and their contacts."""
+    """Send UDP broadcast announcing this user and their contacts."""
     contacts = list(_get_user_contacts(username))
     message = json.dumps({
         "username": username,
         "contacts": contacts,
         "timestamp": time.time()
     })
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-    sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, struct.pack("b", TTL))
-    sock.sendto(message.encode(), (MULTICAST_GROUP, PORT))
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+    sock.sendto(message.encode(), (BROADCAST_ADDR, PORT))
     sock.close()
 
+
 def listen_for_users(username):
-    """Listen for multicast announcements from other users and merge discovered_users.json."""
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+    """Listen for UDP broadcasts from other users and update discovered_users.json."""
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+    # Bind to all interfaces
     try:
         sock.bind(("", PORT))
     except OSError:
         print("[WARN] Could not bind UDP port; another instance might be running.")
-
-    mreq = struct.pack("4sl", socket.inet_aton(MULTICAST_GROUP), socket.INADDR_ANY)
-    sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
 
     my_contacts = _get_user_contacts(username)
 
@@ -94,15 +96,17 @@ def listen_for_users(username):
 
     sock.close()
 
+
 def periodic_broadcast(username):
     """Send presence updates periodically."""
     while RUNNING:
         broadcast_presence(username)
         time.sleep(5)
 
+
 def start_network(username):
-    """Start multicast listener and broadcaster threads."""
-    print(f"[INFO] Starting multicast LAN network for {username}")
+    """Start broadcast listener and broadcaster threads."""
+    print(f"[INFO] Starting LAN broadcast network for {username}")
     os.makedirs(DATA_DIR, exist_ok=True)
 
     listener = threading.Thread(target=listen_for_users, args=(username,), daemon=True)
@@ -110,6 +114,7 @@ def start_network(username):
 
     listener.start()
     broadcaster.start()
+
 
 def remove_from_discovery(username):
     """Remove a user from discovered_users.json on logout/exit."""
