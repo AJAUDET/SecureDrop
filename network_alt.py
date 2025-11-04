@@ -43,25 +43,16 @@ def _get_user_contacts(username):
         return set()
 
 def broadcast_presence(username):
-    contacts = list(_get_user_contacts(username))
     message = json.dumps({
         "username": username,
-        "contacts": contacts,
         "timestamp": time.time()
     })
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, struct.pack("b", TTL))
-    try:
-        sock.sendto(message.encode(), (MULTICAST_GROUP, PORT))
-    finally:
-        sock.close()
+    sock.sendto(message.encode(), (MULTICAST_GROUP, PORT))
+    sock.close()
 
 def listen_for_users(username):
-    """Listen for multicast on Linux only."""
-    if os.name != "posix":
-        # Non-Linux: skip UDP listening
-        return
-
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     try:
@@ -76,16 +67,17 @@ def listen_for_users(username):
 
     while RUNNING:
         try:
-            data, addr = sock.recvfrom(4096)
+            data, addr = sock.recvfrom(1024)
             msg = json.loads(data.decode())
             other_user = msg.get("username")
-            other_contacts = set(msg.get("contacts", []))
             timestamp = msg.get("timestamp", time.time())
 
+            # Ignore self and invalid usernames
             if not other_user or other_user == username:
                 continue
 
-            if username in other_contacts and other_user in my_contacts:
+            # Only add if mutual contact
+            if other_user in my_contacts:
                 discovered = _load_json(DISCOVERY_FILE)
                 discovered[other_user] = {
                     "ip": addr[0],
