@@ -101,14 +101,13 @@ fi
 # Determine network args for LAN broadcast
 # ======================================
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    # Linux: host networking allows full LAN UDP broadcast
     NET_ARGS="--network host"
-    echo "[INFO] Using host network (Linux) for LAN UDP broadcast."
+    echo "[INFO] Using host network (Linux) for full LAN UDP broadcast."
 else
-    # Windows/macOS: bridge network with UDP port mapping
     NET_ARGS="--network $NETWORK_NAME -p 50000:50000/udp"
-    echo "[WARN] LAN UDP broadcast on Windows/macOS may be limited due to Docker network isolation."
-    echo "[INFO] UDP port 50000 mapped to host for discovery."
+    echo "[WARN] LAN UDP broadcast on Windows/macOS is limited by Docker network isolation."
+    echo "[INFO] UDP port 50000 mapped to host; ensure firewall allows UDP traffic."
+    echo "[INFO] For cross-host discovery on Windows/macOS, all devices must be on the same LAN and Docker must allow host-to-host UDP traffic."
 fi
 
 # ======================================
