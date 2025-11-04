@@ -2,7 +2,7 @@
 set -e
 
 # ======================================
-# SecureDrop Docker Launcher (Cross-Platform)
+# SecureDrop Docker Launcher (Cross-Platform LAN Broadcast)
 # ======================================
 # Usage:
 #   ./launch_user.sh --init
@@ -51,7 +51,7 @@ else
 fi
 
 # ======================================
-# Ensure Docker network exists
+# Ensure Docker network exists (bridge fallback)
 # ======================================
 if ! docker network ls --format '{{.Name}}' | grep -q "^${NETWORK_NAME}$"; then
     echo "[INFO] Creating network $NETWORK_NAME..."
@@ -86,7 +86,7 @@ if [ "$MODE" == "init" ]; then
 fi
 
 # ======================================
-# User container setup
+# Per-user container setup
 # ======================================
 CONTAINER_NAME="${USERNAME}_container"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -97,10 +97,21 @@ USER_DATA="${USER_ROOT}/data"
 mkdir -p "$USER_AUTH" "$USER_DATA"
 chmod -R 700 "$USER_ROOT"
 
-# Remove existing container if it exists
+# Remove old container if exists
 if docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
     echo "[INFO] Removing existing container: $CONTAINER_NAME"
     docker rm -f "$CONTAINER_NAME"
+fi
+
+# ======================================
+# Determine network args for LAN broadcast
+# ======================================
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    # Linux: host networking allows full UDP broadcast
+    NET_ARGS="--network host"
+else
+    # Windows/macOS: use bridge network with UDP port mapping
+    NET_ARGS="--network $NETWORK_NAME -p 50000:50000/udp"
 fi
 
 echo "[INFO] Launching SecureDrop container for user: $USERNAME"
@@ -108,11 +119,12 @@ echo "[DEBUG] Mounting volumes:"
 echo "  Auth:   $USER_AUTH -> /app/auth"
 echo "  Data:   $USER_DATA -> /app/data/private"
 echo "  Shared: $SHARED_DATA -> /app/data/shared"
+echo "[DEBUG] Network args: $NET_ARGS"
 
 docker run -it \
     --name "$CONTAINER_NAME" \
     --hostname "${USERNAME}-securedrop" \
-    --network "$NETWORK_NAME" \
+    $NET_ARGS \
     --env USER_NAME="$USERNAME" \
     --env USER_PASSWORD="$PASSWORD" \
     --env USER_EMAIL="$EMAIL" \

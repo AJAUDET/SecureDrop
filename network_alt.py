@@ -1,19 +1,17 @@
 import socket
-import struct
 import threading
 import json
 import os
 import time
+import sys
+from contactmanage_alt import get_user_contacts
 
 DATA_DIR = "/app/data/shared"
 DISCOVERY_FILE = os.path.join(DATA_DIR, "discovered_users.json")
-
-# Multicast configuration
-MULTICAST_GROUP = "224.1.1.1"
 PORT = 50000
-TTL = 2  # hop count, stays within local network
-
+BROADCAST_INTERVAL = 5  # seconds
 RUNNING = True
+USE_FILE_FALLBACK = False  # auto-enable if broadcast fails
 
 
 def _load_discovered():
@@ -32,76 +30,122 @@ def _save_discovered(data):
         json.dump(data, f, indent=2)
 
 
-def broadcast_presence(username):
+def get_host_ip_and_broadcast():
+    """Return host LAN IP and /24 broadcast address."""
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(("8.8.8.8", 80))
+        local_ip = s.getsockname()[0]
+    finally:
+        s.close()
+
+    ip_parts = local_ip.split(".")
+    ip_parts[-1] = "255"
+    broadcast_ip = ".".join(ip_parts)
+    return local_ip, broadcast_ip
+
+
+def broadcast_presence(username, broadcast_ip=None):
     """
-    Sends multicast beacon announcing this user.
+    Send presence announcement over LAN. Fallback to shared JSON if broadcast fails.
     """
+    global USE_FILE_FALLBACK
     message = json.dumps({"username": username, "timestamp": time.time()})
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-    sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, struct.pack('b', TTL))
-    sock.sendto(message.encode(), (MULTICAST_GROUP, PORT))
-    sock.close()
+
+    if USE_FILE_FALLBACK or broadcast_ip is None:
+        # Fallback: write to shared JSON
+        discovered = _load_discovered()
+        discovered[username] = {"ip": "local", "last_seen": time.time()}
+        _save_discovered(discovered)
+        return
+
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        sock.sendto(message.encode(), (broadcast_ip, PORT))
+        sock.close()
+    except Exception as e:
+        print(f"[WARN] Broadcast failed, using file fallback: {e}")
+        USE_FILE_FALLBACK = True
 
 
 def listen_for_users(username):
     """
-    Listens for multicast announcements from other users.
+    Listen for LAN broadcasts and update discovered_users.json only for mutual contacts.
     """
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-
+    global USE_FILE_FALLBACK
     try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         sock.bind(("", PORT))
-    except OSError:
-        print("[WARN] Could not bind UDP port; another instance might be running.")
-
-    mreq = struct.pack("4sl", socket.inet_aton(MULTICAST_GROUP), socket.INADDR_ANY)
-    sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
+    except Exception as e:
+        print(f"[WARN] Cannot bind UDP port {PORT}, using file fallback: {e}")
+        USE_FILE_FALLBACK = True
 
     while RUNNING:
+        if USE_FILE_FALLBACK:
+            # Periodically reload shared JSON to detect users
+            time.sleep(BROADCAST_INTERVAL)
+            continue
+
         try:
             data, addr = sock.recvfrom(1024)
             msg = json.loads(data.decode())
-            user = msg.get("username")
-            if user and user != username:
+            remote_user = msg.get("username")
+            if not remote_user or remote_user == username:
+                continue
+
+            # --- Mutual contact check ---
+            local_contacts = get_user_contacts(username)
+            remote_contacts = get_user_contacts(remote_user)
+
+            if remote_user in local_contacts and username in remote_contacts:
                 discovered = _load_discovered()
-                discovered[user] = {
+                discovered[remote_user] = {
                     "ip": addr[0],
                     "last_seen": msg.get("timestamp", time.time())
                 }
                 _save_discovered(discovered)
+
         except Exception:
             pass
 
-    sock.close()
+    if not USE_FILE_FALLBACK:
+        sock.close()
 
 
-def periodic_broadcast(username):
-    """
-    Periodically send presence updates every few seconds.
-    """
+def periodic_broadcast(username, broadcast_ip):
     while RUNNING:
-        broadcast_presence(username)
-        time.sleep(5)
+        broadcast_presence(username, broadcast_ip)
+        time.sleep(BROADCAST_INTERVAL)
 
 
 def start_network(username):
     """
-    Start the multicast listener and broadcaster threads.
+    Start listener and broadcaster threads for LAN presence discovery.
     """
-    print(f"[INFO] Starting multicast network for {username} on {MULTICAST_GROUP}:{PORT}")
+    global USE_FILE_FALLBACK
     os.makedirs(DATA_DIR, exist_ok=True)
 
-    listener = threading.Thread(target=listen_for_users, args=(username,), daemon=True)
-    broadcaster = threading.Thread(target=periodic_broadcast, args=(username,), daemon=True)
+    # Detect LAN IP and broadcast
+    try:
+        local_ip, broadcast_ip = get_host_ip_and_broadcast()
+        print(f"[INFO] Local IP: {local_ip}, Broadcast IP: {broadcast_ip}")
+    except Exception as e:
+        print(f"[WARN] Cannot detect LAN IP, using file fallback: {e}")
+        USE_FILE_FALLBACK = True
+        broadcast_ip = None
 
+    print(f"[INFO] Starting network discovery for {username}...")
+    listener = threading.Thread(target=listen_for_users, args=(username,), daemon=True)
+    broadcaster = threading.Thread(target=periodic_broadcast, args=(username, broadcast_ip), daemon=True)
     listener.start()
     broadcaster.start()
 
 
 def remove_from_discovery(username):
     """
-    Remove a user from the discovered list on logout/exit.
+    Remove user from discovered_users.json on logout/exit.
     """
     discovered = _load_discovered()
     if username in discovered:
