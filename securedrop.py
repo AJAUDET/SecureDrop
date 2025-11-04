@@ -13,8 +13,7 @@ from contactmanage_alt import (
     verify_contact,
     admin_list,
     admin_clear,
-    remove_contact,
-    get_user_contacts
+    remove_contact
 )
 from network_alt import start_network, remove_from_discovery
 from welcome import welcome_msg
@@ -22,6 +21,18 @@ from welcome import welcome_msg
 DATA_ROOT = "/app/data/shared"
 PRIVATE_DIR = "/app/data/private"
 PASSWD_FILE = os.path.join(DATA_ROOT, "passwd.json")
+
+# Map CLI commands to functions
+command_map = {
+    "add": add_contact,
+    "list": list_contacts,
+    "verify": verify_contact,
+    "remove": remove_contact,
+    "admin_list": admin_list,
+    "admin_clear": admin_clear,
+    "clear": lambda _: os.system("clear"),
+    "exit": lambda username: goodbye_msg(username)
+}
 
 
 def goodbye_msg(username):
@@ -33,55 +44,14 @@ def goodbye_msg(username):
     sys.exit(0)
 
 
-def online_contacts(username):
-    """
-    Returns a list of mutual contacts currently online.
-    """
-    discovered_file = os.path.join(DATA_ROOT, "discovered_users.json")
-    discovered = {}
-    if os.path.exists(discovered_file):
-        try:
-            with open(discovered_file, "r") as f:
-                discovered = json.load(f)
-        except json.JSONDecodeError:
-            discovered = {}
-
-    contacts = get_user_contacts(username)
-    online = []
-
-    for user_name, info in discovered.items():
-        if user_name in contacts:
-            # Check if mutual contact
-            remote_contacts = get_user_contacts(user_name)
-            if username in remote_contacts:
-                online.append(user_name)
-
-    return online
-
-
 def main(username):
-    command_map = {
-        "add": add_contact,
-        "list": list_contacts,
-        "verify": verify_contact,
-        "remove": remove_contact,
-        "admin_list": admin_list,
-        "admin_clear": admin_clear,
-        "clear": lambda _: os.system("clear"),
-        "exit": lambda username: goodbye_msg(username),
-        "status": lambda username: print(f"Online contacts: {', '.join(online_contacts(username)) or 'None'}")
-    }
-
     while True:
         try:
-            online = online_contacts(username)
-            prompt = f"{username}@securedrop.com [{len(online)} online]: "
-            cmd = input(prompt).strip().lower()
-
+            cmd = input(f"{username}@securedrop.com: ").strip().lower()
             if cmd in command_map:
                 command_map[cmd](username)
             elif cmd == "help":
-                print("Available commands: add, list, verify, remove, clear, exit, status")
+                print("Available commands: add, list, verify, remove, clear, exit")
                 if username.lower() == "admin":
                     print("admin_list, admin_clear")
             elif cmd == "":
