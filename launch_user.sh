@@ -2,13 +2,11 @@
 set -e
 
 # ======================================
-# SecureDrop Docker Launcher (Cross-Platform Safe)
+# SecureDrop Docker Launcher (Cross-Platform)
 # ======================================
 # Usage:
 #   ./launch_user.sh --init
 #   ./launch_user.sh <username> <password> <email>
-# Example:
-#   ./launch_user.sh host hostpass host@example.com
 # ======================================
 
 USERNAME="$1"
@@ -18,19 +16,27 @@ IMAGE_NAME="securedrop-docker_user_container"
 NETWORK_NAME="securedrop_bridge"
 
 # ======================================
-# Shared persistent data directory (fixed for macOS/Linux)
+# Determine platform and set shared_data path
 # ======================================
-# This ensures a consistent absolute path, cleans Windows artifacts like ";C",
-# and prevents Docker from misinterpreting the path.
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-SHARED_DATA="${SCRIPT_DIR}/shared_data"
-SHARED_DATA="${SHARED_DATA%%;*}"    # remove any stray ';C' or similar from Windows editors
+if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "win32" ]]; then
+    # Windows Git Bash / Docker Desktop
+    SHARED_DATA="$(pwd -W)/shared_data"
+else
+    # Linux / macOS
+    SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+    SHARED_DATA="${SCRIPT_DIR}/shared_data"
+fi
+
+# Remove hidden carriage returns if any
+SHARED_DATA="${SHARED_DATA//$'\r'/}"
+
+# Create shared data directory
 mkdir -p "$SHARED_DATA"
 chmod 777 "$SHARED_DATA"
 echo "[INFO] Using shared data directory: $SHARED_DATA"
 
 # ======================================
-# Mode detection
+# Detect mode (--init or per-user)
 # ======================================
 if [ "$1" == "--init" ]; then
     MODE="init"
@@ -45,7 +51,7 @@ else
 fi
 
 # ======================================
-# Ensure Docker network (broadcast-capable)
+# Ensure Docker network exists
 # ======================================
 if ! docker network ls --format '{{.Name}}' | grep -q "^${NETWORK_NAME}$"; then
     echo "[INFO] Creating network $NETWORK_NAME..."
@@ -55,18 +61,18 @@ else
 fi
 
 # ======================================
-# Launch modes
+# Launch uninitialized container
 # ======================================
 if [ "$MODE" == "init" ]; then
     CONTAINER_NAME="securedrop_uninitialized"
 
-    # Remove old instance
+    # Remove old instance if exists
     if docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
         echo "[INFO] Removing existing uninitialized container..."
         docker rm -f "$CONTAINER_NAME"
     fi
 
-    echo "[INFO] Starting uninitialized SecureDrop container..."
+    echo "[INFO] Starting uninitialized container..."
     docker run -it \
         --name "$CONTAINER_NAME" \
         --network "$NETWORK_NAME" \
@@ -83,6 +89,7 @@ fi
 # User container setup
 # ======================================
 CONTAINER_NAME="${USERNAME}_container"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 USER_ROOT="${SCRIPT_DIR}/users/${USERNAME}"
 USER_AUTH="${USER_ROOT}/auth"
 USER_DATA="${USER_ROOT}/data"
@@ -90,7 +97,7 @@ USER_DATA="${USER_ROOT}/data"
 mkdir -p "$USER_AUTH" "$USER_DATA"
 chmod -R 700 "$USER_ROOT"
 
-# Remove any existing instance
+# Remove existing container if it exists
 if docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
     echo "[INFO] Removing existing container: $CONTAINER_NAME"
     docker rm -f "$CONTAINER_NAME"
