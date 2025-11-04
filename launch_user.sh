@@ -1,15 +1,24 @@
 #!/bin/bash
 set -e
 
-# Usage: ./launch_user.sh <username> <password> <email>
-# Example: ./launch_user.sh host hostpass host@example.com
+# ======================================
+# SecureDrop Docker Launcher
+# ======================================
+# Usage:
+#   ./launch_user.sh --init
+#   ./launch_user.sh <username> <password> <email>
+# Example:
+#   ./launch_user.sh host hostpass host@example.com
+# ======================================
 
 USERNAME="$1"
 PASSWORD="$2"
 EMAIL="$3"
 IMAGE_NAME="securedrop-docker_user_container"
 NETWORK_NAME="securedrop_bridge"
+SHARED_DATA="$(pwd)/shared_data"
 
+# Detect mode
 if [ "$1" == "--init" ]; then
     MODE="init"
     echo "[INFO] Launching uninitialized SecureDrop container..."
@@ -22,25 +31,35 @@ else
     fi
 fi
 
-# Create Docker network if missing
-if ! docker network ls | grep -q "$NETWORK_NAME"; then
+# ======================================
+# Ensure Docker network (broadcast-capable)
+# ======================================
+if ! docker network ls --format '{{.Name}}' | grep -q "^${NETWORK_NAME}$"; then
     echo "[INFO] Creating network $NETWORK_NAME..."
-    docker network create "$NETWORK_NAME"
+    docker network create --driver bridge "$NETWORK_NAME"
+else
+    echo "[INFO] Using existing Docker network: $NETWORK_NAME"
 fi
 
-# Shared data directory (global for all containers)
-SHARED_DATA="$(pwd)/shared_data"
+# ======================================
+# Shared persistent data directory
+# ======================================
 mkdir -p "$SHARED_DATA"
+chmod 777 "$SHARED_DATA"
 
+# ======================================
+# Launch modes
+# ======================================
 if [ "$MODE" == "init" ]; then
     CONTAINER_NAME="securedrop_uninitialized"
 
-    # Remove old container if exists
+    # Remove old instance
     if docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
         echo "[INFO] Removing existing uninitialized container..."
         docker rm -f "$CONTAINER_NAME"
     fi
 
+    echo "[INFO] Starting uninitialized SecureDrop container..."
     docker run -it \
         --name "$CONTAINER_NAME" \
         --network "$NETWORK_NAME" \
@@ -53,19 +72,20 @@ if [ "$MODE" == "init" ]; then
     exit 0
 fi
 
-# Per-user authentication directory
-USER_AUTH="$(pwd)/users/$USERNAME/auth"
-mkdir -p "$USER_AUTH"
-
-# Per-user private data directory
-USER_DATA="$(pwd)/users/$USERNAME/data"
-mkdir -p "$USER_DATA"
-
+# ======================================
+# User container setup
+# ======================================
 CONTAINER_NAME="${USERNAME}_container"
+USER_ROOT="$(pwd)/users/$USERNAME"
+USER_AUTH="$USER_ROOT/auth"
+USER_DATA="$USER_ROOT/data"
 
-# Remove old container if exists
+mkdir -p "$USER_AUTH" "$USER_DATA"
+chmod -R 700 "$USER_ROOT"
+
+# Remove any existing instance
 if docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
-    echo "[INFO] Removing existing container $CONTAINER_NAME..."
+    echo "[INFO] Removing existing container: $CONTAINER_NAME"
     docker rm -f "$CONTAINER_NAME"
 fi
 
@@ -73,18 +93,23 @@ echo "[INFO] Launching SecureDrop container for user: $USERNAME"
 
 docker run -it \
     --name "$CONTAINER_NAME" \
+    --hostname "$USERNAME-securedrop" \
     --network "$NETWORK_NAME" \
+    --env USER_NAME="$USERNAME" \
+    --env USER_PASSWORD="$PASSWORD" \
+    --env USER_EMAIL="$EMAIL" \
     -v "$USER_AUTH:/app/auth" \
-    -v "$SHARED_DATA:/app/data/shared" \
     -v "$USER_DATA:/app/data/private" \
-    -e USER_NAME="$USERNAME" \
-    -e USER_PASSWORD="$PASSWORD" \
-    -e USER_EMAIL="$EMAIL" \
+    -v "$SHARED_DATA:/app/data/shared" \
     "$IMAGE_NAME" \
     bash -c "python3 securedrop.py; cd /app/data/private; exec bash"
 
-# Close out of container after use
+# ======================================
+# Cleanup after exit
+# ======================================
 if docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
-    echo "[INFO] Removing existing container $CONTAINER_NAME..."
+    echo "[INFO] Cleaning up container: $CONTAINER_NAME"
     docker rm -f "$CONTAINER_NAME"
 fi
+
+echo "[INFO] SecureDrop session for $USERNAME closed."
