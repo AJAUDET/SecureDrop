@@ -6,12 +6,14 @@ import threading
 
 DISCOVERY_FILE = "/app/data/shared/discovered_users.json"
 CONTACTS_DIR = "/app/data/shared/contacts"
+BROADCAST_PORT = 50001
 CHECK_INTERVAL = 5  # seconds
-PING_PORT = 50001
+EXPIRATION_TIME = CHECK_INTERVAL * 2  # mark offline if not seen within this window
 file_lock = threading.Lock()
 
 
 def get_local_ip():
+    """Get the local network IP of this host."""
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
         s.connect(("8.8.8.8", 80))
@@ -40,89 +42,111 @@ def is_mutual_contact(user_a, user_b):
     return user_b in contacts_a and user_a in contacts_b
 
 
-def ping_listener():
+def broadcast_presence(username):
+    """Continuously broadcast this user's presence to the local network."""
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.bind(("0.0.0.0", PING_PORT))
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+
+    local_ip = get_local_ip()
+
     while True:
-        data, addr = sock.recvfrom(1024)
-        if data == b"ping":
-            sock.sendto(b"pong", addr)
+        message = json.dumps({
+            "username": username,
+            "ip": local_ip,
+            "status": "online",
+            "timestamp": time.time()
+        }).encode("utf-8")
+
+        try:
+            sock.sendto(message, ("<broadcast>", BROADCAST_PORT))
+        except Exception as e:
+            print(f"[WARN] Broadcast failed: {e}")
+
+        time.sleep(CHECK_INTERVAL)
 
 
-def ping_user(ip):
+def listen_for_broadcasts(username):
+    """Listen for broadcast messages from other users."""
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.settimeout(1)
-    try:
-        sock.sendto(b"ping", (ip, PING_PORT))
-        data, _ = sock.recvfrom(1024)
-        return data == b"pong"
-    except Exception:
-        return False
-    finally:
-        sock.close()
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    sock.bind(("", BROADCAST_PORT))
+
+    print(f"[INFO] Listening for UDP broadcasts on port {BROADCAST_PORT}...")
+
+    while True:
+        try:
+            data, addr = sock.recvfrom(1024)
+            message = json.loads(data.decode("utf-8"))
+            sender = message.get("username")
+            sender_ip = message.get("ip")
+            timestamp = message.get("timestamp", time.time())
+
+            if sender == username:
+                continue  # Ignore our own broadcast
+
+            if not is_mutual_contact(username, sender):
+                continue  # Only accept mutual contacts
+
+            with file_lock:
+                if os.path.exists(DISCOVERY_FILE):
+                    try:
+                        with open(DISCOVERY_FILE, "r") as f:
+                            discovered = json.load(f)
+                        # Handle old or malformed files
+                        if not isinstance(discovered, dict):
+                            discovered = {}
+                    except json.JSONDecodeError:
+                        discovered = {}
+                else:
+                    discovered = {}
+
+                discovered[sender] = {
+                    "ip": sender_ip,
+                    "online": True,
+                    "last_seen": timestamp
+                }
+
+                with open(DISCOVERY_FILE, "w") as f:
+                    json.dump(discovered, f, indent=2)
+
+        except Exception as e:
+            print(f"[WARN] Broadcast listener error: {e}")
 
 
-def update_discovery(username, local_ip):
-    os.makedirs(os.path.dirname(DISCOVERY_FILE), exist_ok=True)
-    with file_lock:
-        if os.path.exists(DISCOVERY_FILE):
+def cleanup_discovery(username):
+    """Mark users offline if not seen recently."""
+    while True:
+        now = time.time()
+        changed = False
+
+        with file_lock:
+            if not os.path.exists(DISCOVERY_FILE):
+                time.sleep(CHECK_INTERVAL)
+                continue
+
             try:
                 with open(DISCOVERY_FILE, "r") as f:
                     data = json.load(f)
             except json.JSONDecodeError:
                 data = {}
-        else:
-            data = {}
 
-        data[username] = {"ip": local_ip, "online": True}
+            for user, info in list(data.items()):
+                if user == username:
+                    continue
 
-        with open(DISCOVERY_FILE, "w") as f:
-            json.dump(data, f, indent=2)
+                last_seen = info.get("last_seen", 0)
+                online = info.get("online", False)
+                if now - last_seen > EXPIRATION_TIME:
+                    if online:  # was previously online
+                        data[user]["online"] = False
+                        changed = True
 
-
-def check_contacts(username):
-    while True:
-        local_ip = get_local_ip()
-        update_discovery(username, local_ip)
-
-        # Load contacts + discovered users
-        my_contacts = get_user_contacts(username)
-        if not my_contacts:
-            time.sleep(CHECK_INTERVAL)
-            continue
-
-        with file_lock:
-            try:
-                with open(DISCOVERY_FILE, "r") as f:
-                    discovered = json.load(f)
-            except (FileNotFoundError, json.JSONDecodeError):
-                discovered = {}
-
-        changed = False
-
-        for contact_username, info in discovered.items():
-            if contact_username == username:
-                continue
-
-            # Only check mutual contacts
-            if not is_mutual_contact(username, contact_username):
-                continue
-
-            ip = info.get("ip")
-            if not ip:
-                continue
-
-            reachable = ping_user(ip)
-            if info.get("online") != reachable:
-                discovered[contact_username]["online"] = reachable
-                changed = True
-
-        if changed:
-            with file_lock:
+            if changed:
                 with open(DISCOVERY_FILE, "w") as f:
-                    json.dump(discovered, f, indent=2)
+                    json.dump(data, f, indent=2)
 
         time.sleep(CHECK_INTERVAL)
+
 
 def remove_from_discovery(username):
     with file_lock:
@@ -140,8 +164,14 @@ def remove_from_discovery(username):
                 json.dump(data, f, indent=2)
             print(f"[INFO] {username} removed from discovered users.")
 
+
 def start_network(username):
+    """Start the UDP broadcast discovery network."""
+    os.makedirs(os.path.dirname(DISCOVERY_FILE), exist_ok=True)
     local_ip = get_local_ip()
-    update_discovery(username, local_ip)
-    threading.Thread(target=ping_listener, daemon=True).start()
-    threading.Thread(target=check_contacts, args=(username,), daemon=True).start()
+    print(f"[INFO] Starting broadcast network as {username} ({local_ip})")
+
+    # Threads: one to broadcast, one to listen, one to cleanup
+    threading.Thread(target=broadcast_presence, args=(username,), daemon=True).start()
+    threading.Thread(target=listen_for_broadcasts, args=(username,), daemon=True).start()
+    threading.Thread(target=cleanup_discovery, args=(username,), daemon=True).start()
