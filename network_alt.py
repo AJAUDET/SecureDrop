@@ -9,14 +9,12 @@ DATA_DIR = "/app/data/shared"
 DISCOVERY_FILE = os.path.join(DATA_DIR, "discovered_users.json")
 CONTACTS_DIR = os.path.join(DATA_DIR, "contacts")
 
-# Multicast configuration
 MULTICAST_GROUP = "224.1.1.1"
 PORT = 50000
-TTL = 2  # local network hop count
+TTL = 2  # LAN hop count
 
 RUNNING = True
 file_lock = threading.Lock()
-
 
 def _load_json(path):
     if not os.path.exists(path):
@@ -27,13 +25,11 @@ def _load_json(path):
     except json.JSONDecodeError:
         return {}
 
-
 def _save_json(path, data):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with file_lock:
         with open(path, "w") as f:
             json.dump(data, f, indent=2)
-
 
 def _get_user_contacts(username):
     """Return a set of usernames this user has as contacts."""
@@ -47,18 +43,21 @@ def _get_user_contacts(username):
     except json.JSONDecodeError:
         return set()
 
-
 def broadcast_presence(username):
-    """Send multicast beacon announcing this user."""
-    message = json.dumps({"username": username, "timestamp": time.time()})
+    """Send multicast beacon announcing this user and their contacts."""
+    contacts = list(_get_user_contacts(username))
+    message = json.dumps({
+        "username": username,
+        "contacts": contacts,
+        "timestamp": time.time()
+    })
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, struct.pack("b", TTL))
     sock.sendto(message.encode(), (MULTICAST_GROUP, PORT))
     sock.close()
 
-
 def listen_for_users(username):
-    """Listen for multicast announcements from other users."""
+    """Listen for multicast announcements from other users and merge discovered_users.json."""
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     try:
@@ -73,22 +72,16 @@ def listen_for_users(username):
 
     while RUNNING:
         try:
-            data, addr = sock.recvfrom(1024)
+            data, addr = sock.recvfrom(4096)
             msg = json.loads(data.decode())
             other_user = msg.get("username")
+            other_contacts = set(msg.get("contacts", []))
             timestamp = msg.get("timestamp", time.time())
 
             if not other_user or other_user == username:
                 continue
 
-            # Load the other user's contacts
-            other_contacts_file = os.path.join(CONTACTS_DIR, f"{other_user}.json")
-            if not os.path.exists(other_contacts_file):
-                continue
-            with open(other_contacts_file, "r") as f:
-                other_contacts = json.load(f)
-
-            # Only add if mutual
+            # Only add if mutual contacts
             if username in other_contacts and other_user in my_contacts:
                 discovered = _load_json(DISCOVERY_FILE)
                 discovered[other_user] = {
@@ -97,10 +90,9 @@ def listen_for_users(username):
                 }
                 _save_json(DISCOVERY_FILE, discovered)
         except Exception:
-            pass
+            continue
 
     sock.close()
-
 
 def periodic_broadcast(username):
     """Send presence updates periodically."""
@@ -108,10 +100,9 @@ def periodic_broadcast(username):
         broadcast_presence(username)
         time.sleep(5)
 
-
 def start_network(username):
-    """Start the multicast listener and broadcaster threads."""
-    print(f"[INFO] Starting multicast network for {username} on {MULTICAST_GROUP}:{PORT}")
+    """Start multicast listener and broadcaster threads."""
+    print(f"[INFO] Starting multicast LAN network for {username}")
     os.makedirs(DATA_DIR, exist_ok=True)
 
     listener = threading.Thread(target=listen_for_users, args=(username,), daemon=True)
@@ -120,9 +111,8 @@ def start_network(username):
     listener.start()
     broadcaster.start()
 
-
 def remove_from_discovery(username):
-    """Remove a user from the discovered list on logout/exit."""
+    """Remove a user from discovered_users.json on logout/exit."""
     discovered = _load_json(DISCOVERY_FILE)
     if username in discovered:
         del discovered[username]

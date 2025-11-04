@@ -4,10 +4,6 @@ set -e
 # ======================================
 # SecureDrop Docker Launcher (Cross-Platform LAN Broadcast)
 # ======================================
-# Usage:
-#   ./launch_user.sh --init
-#   ./launch_user.sh <username> <password> <email>
-# ======================================
 
 USERNAME="$1"
 PASSWORD="$2"
@@ -66,7 +62,6 @@ fi
 if [ "$MODE" == "init" ]; then
     CONTAINER_NAME="securedrop_uninitialized"
 
-    # Remove old instance if exists
     if docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
         echo "[INFO] Removing existing uninitialized container..."
         docker rm -f "$CONTAINER_NAME"
@@ -97,7 +92,6 @@ USER_DATA="${USER_ROOT}/data"
 mkdir -p "$USER_AUTH" "$USER_DATA"
 chmod -R 700 "$USER_ROOT"
 
-# Remove old container if exists
 if docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
     echo "[INFO] Removing existing container: $CONTAINER_NAME"
     docker rm -f "$CONTAINER_NAME"
@@ -107,13 +101,19 @@ fi
 # Determine network args for LAN broadcast
 # ======================================
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    # Linux: host networking allows full UDP broadcast
+    # Linux: host networking allows full LAN UDP broadcast
     NET_ARGS="--network host"
+    echo "[INFO] Using host network (Linux) for LAN UDP broadcast."
 else
-    # Windows/macOS: use bridge network with UDP port mapping
+    # Windows/macOS: bridge network with UDP port mapping
     NET_ARGS="--network $NETWORK_NAME -p 50000:50000/udp"
+    echo "[WARN] LAN UDP broadcast on Windows/macOS may be limited due to Docker network isolation."
+    echo "[INFO] UDP port 50000 mapped to host for discovery."
 fi
 
+# ======================================
+# Launch the container
+# ======================================
 echo "[INFO] Launching SecureDrop container for user: $USERNAME"
 echo "[DEBUG] Mounting volumes:"
 echo "  Auth:   $USER_AUTH -> /app/auth"
