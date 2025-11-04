@@ -2,7 +2,7 @@
 set -e
 
 # ======================================
-# SecureDrop Docker Launcher
+# SecureDrop Docker Launcher (Cross-Platform Safe)
 # ======================================
 # Usage:
 #   ./launch_user.sh --init
@@ -16,9 +16,22 @@ PASSWORD="$2"
 EMAIL="$3"
 IMAGE_NAME="securedrop-docker_user_container"
 NETWORK_NAME="securedrop_bridge"
-SHARED_DATA="$(pwd)/shared_data"
 
-# Detect mode
+# ======================================
+# Shared persistent data directory (fixed for macOS/Linux)
+# ======================================
+# This ensures a consistent absolute path, cleans Windows artifacts like ";C",
+# and prevents Docker from misinterpreting the path.
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+SHARED_DATA="${SCRIPT_DIR}/shared_data"
+SHARED_DATA="${SHARED_DATA%%;*}"    # remove any stray ';C' or similar from Windows editors
+mkdir -p "$SHARED_DATA"
+chmod 777 "$SHARED_DATA"
+echo "[INFO] Using shared data directory: $SHARED_DATA"
+
+# ======================================
+# Mode detection
+# ======================================
 if [ "$1" == "--init" ]; then
     MODE="init"
     echo "[INFO] Launching uninitialized SecureDrop container..."
@@ -42,12 +55,6 @@ else
 fi
 
 # ======================================
-# Shared persistent data directory
-# ======================================
-mkdir -p "$SHARED_DATA"
-chmod 777 "$SHARED_DATA"
-
-# ======================================
 # Launch modes
 # ======================================
 if [ "$MODE" == "init" ]; then
@@ -63,7 +70,7 @@ if [ "$MODE" == "init" ]; then
     docker run -it \
         --name "$CONTAINER_NAME" \
         --network "$NETWORK_NAME" \
-        -v "$SHARED_DATA:/app/data/shared" \
+        -v "${SHARED_DATA}:/app/data/shared" \
         "$IMAGE_NAME" \
         bash -c "echo '[INFO] Booted uninitialized container. Run python3 securedrop.py to create/login a user.'; exec bash"
 
@@ -76,9 +83,9 @@ fi
 # User container setup
 # ======================================
 CONTAINER_NAME="${USERNAME}_container"
-USER_ROOT="$(pwd)/users/$USERNAME"
-USER_AUTH="$USER_ROOT/auth"
-USER_DATA="$USER_ROOT/data"
+USER_ROOT="${SCRIPT_DIR}/users/${USERNAME}"
+USER_AUTH="${USER_ROOT}/auth"
+USER_DATA="${USER_ROOT}/data"
 
 mkdir -p "$USER_AUTH" "$USER_DATA"
 chmod -R 700 "$USER_ROOT"
@@ -90,17 +97,21 @@ if docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
 fi
 
 echo "[INFO] Launching SecureDrop container for user: $USERNAME"
+echo "[DEBUG] Mounting volumes:"
+echo "  Auth:   $USER_AUTH -> /app/auth"
+echo "  Data:   $USER_DATA -> /app/data/private"
+echo "  Shared: $SHARED_DATA -> /app/data/shared"
 
 docker run -it \
     --name "$CONTAINER_NAME" \
-    --hostname "$USERNAME-securedrop" \
+    --hostname "${USERNAME}-securedrop" \
     --network "$NETWORK_NAME" \
     --env USER_NAME="$USERNAME" \
     --env USER_PASSWORD="$PASSWORD" \
     --env USER_EMAIL="$EMAIL" \
-    -v "$USER_AUTH:/app/auth" \
-    -v "$USER_DATA:/app/data/private" \
-    -v "$SHARED_DATA:/app/data/shared" \
+    -v "${USER_AUTH}:/app/auth" \
+    -v "${USER_DATA}:/app/data/private" \
+    -v "${SHARED_DATA}:/app/data/shared" \
     "$IMAGE_NAME" \
     bash -c "python3 securedrop.py; cd /app/data/private; exec bash"
 
