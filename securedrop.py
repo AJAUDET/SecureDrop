@@ -1,11 +1,12 @@
 import os
 import sys
+import socket
+import struct
 import pwinput
 import json
 import atexit
 import signal
 import time
-import threading
 import user_alt as user
 import verify_alt as verify
 from contactmanage_alt import (
@@ -34,6 +35,64 @@ command_map = {
     "clear": lambda _: os.system("clear"),
     "exit": lambda username: goodbye_msg(username)
 }
+
+
+MULTICAST_GROUP = "224.1.1.1"
+PORT = 50000
+TEST_TIMEOUT = 5  # seconds
+
+def test_udp_discovery():
+    print("\n[INFO] Testing UDP discovery on LAN...")
+
+    # Listener socket
+    listener = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+    listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    try:
+        listener.bind(("", PORT))
+    except OSError:
+        print("[WARN] Could not bind UDP port. Another instance might be running.")
+        return
+
+    mreq = struct.pack("4sl", socket.inet_aton(MULTICAST_GROUP), socket.INADDR_ANY)
+    listener.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
+    listener.settimeout(TEST_TIMEOUT)
+
+    # Send a test multicast message
+    test_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+    test_sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, struct.pack("b", 2))
+
+    test_message = f"SECURE_DROP_UDP_TEST:{username}:{time.time()}"
+    test_sock.sendto(test_message.encode(), (MULTICAST_GROUP, PORT))
+    test_sock.close()
+
+    print(f"[INFO] Sent test UDP multicast message as '{username}'. Listening for {TEST_TIMEOUT} seconds...")
+
+    start_time = time.time()
+    found_other_devices = False
+
+    while time.time() - start_time < TEST_TIMEOUT:
+        try:
+            data, addr = listener.recvfrom(1024)
+            data_decoded = data.decode()
+
+            # Ignore our own test message
+            if data_decoded.startswith(f"SECURE_DROP_UDP_TEST:{username}:"):
+                continue
+
+            print(f"[SUCCESS] Received UDP message from {addr}: {data_decoded}")
+            found_other_devices = True
+
+        except socket.timeout:
+            break
+        except Exception:
+            continue
+
+    listener.close()
+
+    if not found_other_devices:
+        print("[WARN] No other devices responded to UDP discovery. Check network/firewall.")
+    else:
+        print("[INFO] UDP discovery test successful. Other devices detected on LAN.\n")
 
 
 def goodbye_msg(username):
@@ -139,6 +198,7 @@ if __name__ == "__main__":
     # --- Start UDP multicast LAN discovery ---
     print(f"[INFO] Starting network discovery for {username}...")
     start_network(username)  # This now merges discovered_users.json safely
+    test_udp_discovery()
 
     # --- Greet the user ---
     welcome_msg(username)
