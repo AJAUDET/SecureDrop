@@ -1,154 +1,130 @@
 import socket
+import struct
 import threading
 import json
 import os
 import time
-import sys
-from contactmanage_alt import get_user_contacts
 
 DATA_DIR = "/app/data/shared"
 DISCOVERY_FILE = os.path.join(DATA_DIR, "discovered_users.json")
+CONTACTS_DIR = os.path.join(DATA_DIR, "contacts")
+
+# Multicast configuration
+MULTICAST_GROUP = "224.1.1.1"
 PORT = 50000
-BROADCAST_INTERVAL = 5  # seconds
+TTL = 2  # local network hop count
+
 RUNNING = True
-USE_FILE_FALLBACK = False  # auto-enable if broadcast fails
+file_lock = threading.Lock()
 
 
-def _load_discovered():
-    if not os.path.exists(DISCOVERY_FILE):
+def _load_json(path):
+    if not os.path.exists(path):
         return {}
     try:
-        with open(DISCOVERY_FILE, "r") as f:
+        with open(path, "r") as f:
             return json.load(f)
     except json.JSONDecodeError:
         return {}
 
 
-def _save_discovered(data):
-    os.makedirs(DATA_DIR, exist_ok=True)
-    with open(DISCOVERY_FILE, "w") as f:
-        json.dump(data, f, indent=2)
+def _save_json(path, data):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with file_lock:
+        with open(path, "w") as f:
+            json.dump(data, f, indent=2)
 
 
-def get_host_ip_and_broadcast():
-    """Return host LAN IP and /24 broadcast address."""
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+def _get_user_contacts(username):
+    """Return a set of usernames this user has as contacts."""
+    path = os.path.join(CONTACTS_DIR, f"{username}.json")
+    if not os.path.exists(path):
+        return set()
     try:
-        s.connect(("8.8.8.8", 80))
-        local_ip = s.getsockname()[0]
-    finally:
-        s.close()
-
-    ip_parts = local_ip.split(".")
-    ip_parts[-1] = "255"
-    broadcast_ip = ".".join(ip_parts)
-    return local_ip, broadcast_ip
+        with open(path, "r") as f:
+            data = json.load(f)
+        return set(data.keys())
+    except json.JSONDecodeError:
+        return set()
 
 
-def broadcast_presence(username, broadcast_ip=None):
-    """
-    Send presence announcement over LAN. Fallback to shared JSON if broadcast fails.
-    """
-    global USE_FILE_FALLBACK
+def broadcast_presence(username):
+    """Send multicast beacon announcing this user."""
     message = json.dumps({"username": username, "timestamp": time.time()})
-
-    if USE_FILE_FALLBACK or broadcast_ip is None:
-        # Fallback: write to shared JSON
-        discovered = _load_discovered()
-        discovered[username] = {"ip": "local", "last_seen": time.time()}
-        _save_discovered(discovered)
-        return
-
-    try:
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        sock.sendto(message.encode(), (broadcast_ip, PORT))
-        sock.close()
-    except Exception as e:
-        print(f"[WARN] Broadcast failed, using file fallback: {e}")
-        USE_FILE_FALLBACK = True
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+    sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, struct.pack("b", TTL))
+    sock.sendto(message.encode(), (MULTICAST_GROUP, PORT))
+    sock.close()
 
 
 def listen_for_users(username):
-    """
-    Listen for LAN broadcasts and update discovered_users.json only for mutual contacts.
-    """
-    global USE_FILE_FALLBACK
+    """Listen for multicast announcements from other users."""
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     try:
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         sock.bind(("", PORT))
-    except Exception as e:
-        print(f"[WARN] Cannot bind UDP port {PORT}, using file fallback: {e}")
-        USE_FILE_FALLBACK = True
+    except OSError:
+        print("[WARN] Could not bind UDP port; another instance might be running.")
+
+    mreq = struct.pack("4sl", socket.inet_aton(MULTICAST_GROUP), socket.INADDR_ANY)
+    sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
+
+    my_contacts = _get_user_contacts(username)
 
     while RUNNING:
-        if USE_FILE_FALLBACK:
-            # Periodically reload shared JSON to detect users
-            time.sleep(BROADCAST_INTERVAL)
-            continue
-
         try:
             data, addr = sock.recvfrom(1024)
             msg = json.loads(data.decode())
-            remote_user = msg.get("username")
-            if not remote_user or remote_user == username:
+            other_user = msg.get("username")
+            timestamp = msg.get("timestamp", time.time())
+
+            if not other_user or other_user == username:
                 continue
 
-            # --- Mutual contact check ---
-            local_contacts = get_user_contacts(username)
-            remote_contacts = get_user_contacts(remote_user)
+            # Load the other user's contacts
+            other_contacts_file = os.path.join(CONTACTS_DIR, f"{other_user}.json")
+            if not os.path.exists(other_contacts_file):
+                continue
+            with open(other_contacts_file, "r") as f:
+                other_contacts = json.load(f)
 
-            if remote_user in local_contacts and username in remote_contacts:
-                discovered = _load_discovered()
-                discovered[remote_user] = {
+            # Only add if mutual
+            if username in other_contacts and other_user in my_contacts:
+                discovered = _load_json(DISCOVERY_FILE)
+                discovered[other_user] = {
                     "ip": addr[0],
-                    "last_seen": msg.get("timestamp", time.time())
+                    "last_seen": timestamp
                 }
-                _save_discovered(discovered)
-
+                _save_json(DISCOVERY_FILE, discovered)
         except Exception:
             pass
 
-    if not USE_FILE_FALLBACK:
-        sock.close()
+    sock.close()
 
 
-def periodic_broadcast(username, broadcast_ip):
+def periodic_broadcast(username):
+    """Send presence updates periodically."""
     while RUNNING:
-        broadcast_presence(username, broadcast_ip)
-        time.sleep(BROADCAST_INTERVAL)
+        broadcast_presence(username)
+        time.sleep(5)
 
 
 def start_network(username):
-    """
-    Start listener and broadcaster threads for LAN presence discovery.
-    """
-    global USE_FILE_FALLBACK
+    """Start the multicast listener and broadcaster threads."""
+    print(f"[INFO] Starting multicast network for {username} on {MULTICAST_GROUP}:{PORT}")
     os.makedirs(DATA_DIR, exist_ok=True)
 
-    # Detect LAN IP and broadcast
-    try:
-        local_ip, broadcast_ip = get_host_ip_and_broadcast()
-        print(f"[INFO] Local IP: {local_ip}, Broadcast IP: {broadcast_ip}")
-    except Exception as e:
-        print(f"[WARN] Cannot detect LAN IP, using file fallback: {e}")
-        USE_FILE_FALLBACK = True
-        broadcast_ip = None
-
-    print(f"[INFO] Starting network discovery for {username}...")
     listener = threading.Thread(target=listen_for_users, args=(username,), daemon=True)
-    broadcaster = threading.Thread(target=periodic_broadcast, args=(username, broadcast_ip), daemon=True)
+    broadcaster = threading.Thread(target=periodic_broadcast, args=(username,), daemon=True)
+
     listener.start()
     broadcaster.start()
 
 
 def remove_from_discovery(username):
-    """
-    Remove user from discovered_users.json on logout/exit.
-    """
-    discovered = _load_discovered()
+    """Remove a user from the discovered list on logout/exit."""
+    discovered = _load_json(DISCOVERY_FILE)
     if username in discovered:
         del discovered[username]
-        _save_discovered(discovered)
+        _save_json(DISCOVERY_FILE, discovered)
         print(f"[INFO] {username} removed from discovered users.")
