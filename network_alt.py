@@ -8,14 +8,14 @@ import time
 DATA_DIR = "/app/data/shared"
 DISCOVERY_FILE = os.path.join(DATA_DIR, "discovered_users.json")
 CONTACTS_DIR = os.path.join(DATA_DIR, "contacts")
-SYNC_INTERVAL = 5  # seconds
 
 MULTICAST_GROUP = "224.1.1.1"
 PORT = 50000
-TTL = 2
+TTL = 2  # LAN hop count
 
 RUNNING = True
 file_lock = threading.Lock()
+
 
 def _load_json(path):
     if not os.path.exists(path):
@@ -26,25 +26,33 @@ def _load_json(path):
     except json.JSONDecodeError:
         return {}
 
+
 def _save_json(path, data):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with file_lock:
         with open(path, "w") as f:
             json.dump(data, f, indent=2)
 
+
 def _get_user_contacts(username):
+    """Return a set of usernames this user has as contacts."""
     path = os.path.join(CONTACTS_DIR, f"{username}.json")
     if not os.path.exists(path):
         return set()
     try:
         with open(path, "r") as f:
-            return set(json.load(f).keys())
+            data = json.load(f)
+        return set(data.keys())
     except json.JSONDecodeError:
         return set()
 
+
 def broadcast_presence(username):
+    """Send multicast beacon announcing this user and their contacts."""
+    contacts = list(_get_user_contacts(username))
     message = json.dumps({
         "username": username,
+        "contacts": contacts,
         "timestamp": time.time()
     })
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
@@ -52,13 +60,12 @@ def broadcast_presence(username):
     sock.sendto(message.encode(), (MULTICAST_GROUP, PORT))
     sock.close()
 
+
 def listen_for_users(username):
+    """Listen for multicast announcements from other users and update discovered_users.json."""
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    try:
-        sock.bind(("", PORT))
-    except OSError:
-        print("[WARN] Could not bind UDP port; another instance might be running.")
+    sock.bind(("", PORT))
 
     mreq = struct.pack("4sl", socket.inet_aton(MULTICAST_GROUP), socket.INADDR_ANY)
     sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
@@ -67,65 +74,50 @@ def listen_for_users(username):
 
     while RUNNING:
         try:
-            data, addr = sock.recvfrom(1024)
+            data, addr = sock.recvfrom(4096)
             msg = json.loads(data.decode())
             other_user = msg.get("username")
+            other_contacts = set(msg.get("contacts", []))
             timestamp = msg.get("timestamp", time.time())
 
-            # Ignore self and invalid usernames
+            # Ignore self
             if not other_user or other_user == username:
                 continue
 
-            # Only add if mutual contact
-            if other_user in my_contacts:
-                discovered = _load_json(DISCOVERY_FILE)
-                discovered[other_user] = {
-                    "ip": addr[0],
-                    "last_seen": timestamp
-                }
-                _save_json(DISCOVERY_FILE, discovered)
+            # Only add if mutual contacts
+            if username not in other_contacts or other_user not in my_contacts:
+                continue
+
+            discovered = _load_json(DISCOVERY_FILE)
+            discovered[other_user] = {"ip": addr[0], "last_seen": timestamp}
+            _save_json(DISCOVERY_FILE, discovered)
         except Exception:
             continue
+
     sock.close()
 
-def sync_discovery_file(username):
-    """Periodically merge discovered_users.json from shared folder."""
-    while RUNNING:
-        discovered = _load_json(DISCOVERY_FILE)
-        for fname in os.listdir(DATA_DIR):
-            if fname.endswith(".json") and fname != "discovered_users.json":
-                other_file = os.path.join(DATA_DIR, fname)
-                try:
-                    other_data = _load_json(other_file)
-                    discovered.update(other_data)
-                except Exception:
-                    continue
-        _save_json(DISCOVERY_FILE, discovered)
-        time.sleep(SYNC_INTERVAL)
 
 def periodic_broadcast(username):
+    """Send presence updates periodically."""
     while RUNNING:
         broadcast_presence(username)
         time.sleep(5)
 
+
 def start_network(username):
+    """Start the multicast listener and broadcaster threads."""
+    print(f"[INFO] Starting multicast LAN network for {username}")
     os.makedirs(DATA_DIR, exist_ok=True)
-    print(f"[INFO] Starting LAN network for {username} ({'Linux host network' if os.name == 'posix' else 'shared folder sync'})")
 
-    threads = []
-    if os.name == "posix":
-        t_listen = threading.Thread(target=listen_for_users, args=(username,), daemon=True)
-        threads.append(t_listen)
-        t_listen.start()
+    listener = threading.Thread(target=listen_for_users, args=(username,), daemon=True)
+    broadcaster = threading.Thread(target=periodic_broadcast, args=(username,), daemon=True)
 
-    t_broadcast = threading.Thread(target=periodic_broadcast, args=(username,), daemon=True)
-    t_sync = threading.Thread(target=sync_discovery_file, args=(username,), daemon=True)
+    listener.start()
+    broadcaster.start()
 
-    threads.extend([t_broadcast, t_sync])
-    t_broadcast.start()
-    t_sync.start()
 
 def remove_from_discovery(username):
+    """Remove a user from discovered_users.json on logout/exit."""
     discovered = _load_json(DISCOVERY_FILE)
     if username in discovered:
         del discovered[username]
