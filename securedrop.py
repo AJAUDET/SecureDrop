@@ -5,6 +5,7 @@ import json
 import atexit
 import signal
 import time
+import threading
 import user_alt as user
 import verify_alt as verify
 from contactmanage_alt import (
@@ -15,12 +16,12 @@ from contactmanage_alt import (
     admin_clear,
     remove_contact
 )
-from network_alt import start_network, remove_from_discovery
+from network_alt import start_network, remove_from_discovery, DATA_DIR
+
 from welcome import welcome_msg
 
-DATA_ROOT = "/app/data/shared"
 PRIVATE_DIR = "/app/data/private"
-PASSWD_FILE = os.path.join(DATA_ROOT, "passwd.json")
+PASSWD_FILE = os.path.join(DATA_DIR, "passwd.json")
 
 # Map CLI commands to functions
 command_map = {
@@ -79,7 +80,7 @@ def init_passwd_file():
 
 
 def create_user_dirs(username):
-    user_dir = os.path.join(DATA_ROOT, username)
+    user_dir = os.path.join(DATA_DIR, username)
     for subdir in ["contacts", "public_keys", "private_keys"]:
         os.makedirs(os.path.join(user_dir, subdir), exist_ok=True)
 
@@ -94,14 +95,14 @@ def login_or_register(data):
             print("Email cannot be empty.")
             email = input(f"Enter your Email for {username}: ").strip()
 
-        user.add_user(data_dir=DATA_ROOT, auto_user=username, auto_pass=password, email=email)
-        verify.verify(username, password, data_dir=DATA_ROOT)
+        user.add_user(data_dir=DATA_DIR, auto_user=username, auto_pass=password, email=email)
+        verify.verify(username, password, data_dir=DATA_DIR)
         return username, password
 
     elif action == "l":
         username = input("Enter your Username: ").strip()
         password = pwinput.pwinput(prompt="Enter your Password: ", mask="*")
-        verify.verify(username, password, data_dir=DATA_ROOT)
+        verify.verify(username, password, data_dir=DATA_DIR)
         return username, password
 
     else:
@@ -110,7 +111,7 @@ def login_or_register(data):
 
 
 if __name__ == "__main__":
-    os.makedirs(DATA_ROOT, exist_ok=True)
+    os.makedirs(DATA_DIR, exist_ok=True)
     os.makedirs(PRIVATE_DIR, exist_ok=True)
 
     # --- Load or initialize password file ---
@@ -123,7 +124,7 @@ if __name__ == "__main__":
 
     if username and username in data["Users"]:
         password_env = password_env or pwinput.pwinput(f"Enter password for {username}: ", mask="*")
-        verify.verify(username, password_env, data_dir=DATA_ROOT)
+        verify.verify(username, password_env, data_dir=DATA_DIR)
     else:
         username, password_env = login_or_register(data)
 
@@ -135,9 +136,9 @@ if __name__ == "__main__":
     signal.signal(signal.SIGTERM, lambda *_: goodbye_msg(username))
     signal.signal(signal.SIGINT, lambda *_: goodbye_msg(username))
 
-    # --- Start the UDP broadcast discovery network ---
+    # --- Start UDP multicast LAN discovery ---
     print(f"[INFO] Starting network discovery for {username}...")
-    start_network(username)
+    start_network(username)  # This now merges discovered_users.json safely
 
     # --- Greet the user ---
     welcome_msg(username)
