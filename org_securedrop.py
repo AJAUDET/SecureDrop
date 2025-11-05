@@ -18,7 +18,7 @@ from contactmanage import (
     admin_list,
     admin_clear
 )
-from network_no_docker import start_network
+from network import start_network
 from welcome import welcome_msg
 
 DATA_DIR = "/tmp/securedrop_test/shared"
