@@ -10,35 +10,43 @@ TTL = 2  # LAN hop count
 RUNNING = True
 
 
+USE_MULTICAST = False  # set True when testing on LAN or home network
+
+TARGET_IP = "224.1.1.1" if USE_MULTICAST else "127.0.0.1"
+
 def broadcast_presence(username):
     """Continuously broadcast UDP messages announcing this user."""
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-    sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, struct.pack("b", TTL))
+    if USE_MULTICAST:
+        sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, struct.pack("b", TTL))
+    else:
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
     while RUNNING:
         message = json.dumps({
             "username": username,
             "timestamp": time.time()
         })
-        sock.sendto(message.encode(), (MULTICAST_GROUP, PORT))
-        print(f"[BROADCAST] Sent UDP message from {username}")
+        sock.sendto(message.encode(), (TARGET_IP, PORT))
+        print(f"[BROADCAST] Sent UDP message from {username} to {TARGET_IP}")
         time.sleep(5)
 
     sock.close()
 
 
 def listen_for_users(username):
-    """Listen for UDP multicast messages from other users and print them."""
+    """Listen for UDP messages (multicast or unicast) and print them."""
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     sock.bind(("", PORT))
 
-    mreq = struct.pack("4sl", socket.inet_aton(MULTICAST_GROUP), socket.INADDR_ANY)
-    sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
+    if USE_MULTICAST:
+        mreq = struct.pack("4sl", socket.inet_aton(TARGET_IP), socket.INADDR_ANY)
+        sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
+
+    print(f"[LISTEN] Listening for UDP on {TARGET_IP}:{PORT}...")
 
     my_ip = socket.gethostbyname(socket.gethostname())
-
-    print(f"[LISTEN] Listening for UDP broadcasts on {MULTICAST_GROUP}:{PORT}...")
 
     while RUNNING:
         try:
@@ -47,7 +55,6 @@ def listen_for_users(username):
             other_user = msg.get("username")
             timestamp = msg.get("timestamp")
 
-            # Ignore own messages
             if not other_user or other_user == username or addr[0] == my_ip:
                 continue
 
