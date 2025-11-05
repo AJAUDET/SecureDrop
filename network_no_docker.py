@@ -26,7 +26,6 @@ last_other_msg = 0
 # Broadcast function
 # --------------------------
 def broadcast_presence(username):
-    """Continuously broadcast UDP presence messages."""
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     
     if USE_MULTICAST:
@@ -56,7 +55,6 @@ def broadcast_presence(username):
 # Listener function
 # --------------------------
 def listen_for_users(username):
-    """Listen for UDP messages and track other users."""
     global last_self_msg, last_other_msg
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
@@ -113,7 +111,6 @@ def listen_for_users(username):
 # Network starter
 # --------------------------
 def start_network(username):
-    """Start broadcasting and listening in background threads."""
     broadcaster_thread = threading.Thread(target=broadcast_presence, args=(username,), daemon=True)
     listener_thread = threading.Thread(target=listen_for_users, args=(username,), daemon=True)
 

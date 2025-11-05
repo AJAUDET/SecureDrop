@@ -9,7 +9,7 @@ import signal
 import time
 import threading
 
-import user
+import user_no_docker as user
 import verify_no_docker as verify
 from contactmanage import (
     add_contact,
@@ -18,7 +18,7 @@ from contactmanage import (
     admin_list,
     admin_clear
 )
-from network import start_network
+from network_no_docker import start_network
 from welcome import welcome_msg
 
 DATA_DIR = "/tmp/securedrop_test/shared"
