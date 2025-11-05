@@ -4,43 +4,59 @@ import threading
 import json
 import time
 
+# --------------------------
+# Configuration
+# --------------------------
 MULTICAST_GROUP = "224.1.1.1"
 PORT = 50000
 TTL = 2  # LAN hop count
 RUNNING = True
 
-# --- Config ---
-USE_MULTICAST = False  # True for LAN; False for hotspot or direct test
-TARGET_IP = "224.1.1.1" if USE_MULTICAST else "255.255.255.255"
+USE_MULTICAST = False  # True for LAN; False for hotspot / direct test
+TARGET_IP = MULTICAST_GROUP if USE_MULTICAST else "255.255.255.255"
 
-# --- Runtime tracker ---
+# --------------------------
+# Runtime trackers
+# --------------------------
 last_self_msg = 0
 last_other_msg = 0
 
 
+# --------------------------
+# Broadcast function
+# --------------------------
 def broadcast_presence(username):
-    """Continuously broadcast UDP messages announcing this user."""
+    """Continuously broadcast UDP presence messages."""
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-
+    
     if USE_MULTICAST:
         sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, struct.pack("b", TTL))
     else:
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
+    print(f"[INFO] Broadcasting UDP presence as '{username}' to {TARGET_IP}:{PORT}")
+
     while RUNNING:
-        message = json.dumps({
-            "username": username,
-            "timestamp": time.time()
-        })
-        sock.sendto(message.encode(), (TARGET_IP, PORT))
-        print(f"[BROADCAST] Sent UDP message from {username} to {TARGET_IP}")
-        time.sleep(5)
+        try:
+            message = json.dumps({
+                "username": username,
+                "timestamp": time.time()
+            })
+            sock.sendto(message.encode(), (TARGET_IP, PORT))
+            print(f"[BROADCAST] Sent UDP message from {username}")
+            time.sleep(5)
+        except Exception as e:
+            print(f"[ERROR] Broadcast failed: {e}")
+            time.sleep(5)
 
     sock.close()
 
 
+# --------------------------
+# Listener function
+# --------------------------
 def listen_for_users(username):
-    """Listen for UDP messages and detect if others are visible."""
+    """Listen for UDP messages and track other users."""
     global last_self_msg, last_other_msg
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
@@ -51,10 +67,11 @@ def listen_for_users(username):
         mreq = struct.pack("4sl", socket.inet_aton(TARGET_IP), socket.INADDR_ANY)
         sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
 
-    print(f"[LISTEN] Listening for UDP on {TARGET_IP}:{PORT}...")
     my_ip = socket.gethostbyname(socket.gethostname())
     seen_others = set()
     start_time = time.time()
+
+    print(f"[LISTEN] Listening for UDP on {TARGET_IP}:{PORT}...")
 
     while RUNNING:
         try:
@@ -66,8 +83,8 @@ def listen_for_users(username):
             if not other_user:
                 continue
 
+            # Ignore own messages
             if addr[0] == my_ip or other_user == username:
-                # This is our own message (loopback)
                 last_self_msg = time.time()
                 continue
 
@@ -79,39 +96,46 @@ def listen_for_users(username):
         except Exception:
             continue
 
-        # Check every 30 seconds for connectivity status
+        # Periodically report status
         if time.time() - start_time > 30:
             start_time = time.time()
             if last_other_msg < last_self_msg:
-                print("\n[WARN] No other users detected — your UDP messages are only looping back.")
-                print("       This likely means your hotspot or network is blocking broadcast/multicast.\n")
-                print("       ➤ Try switching to a home Wi-Fi or wired LAN for proper discovery.\n")
+                print("\n[WARN] No other users detected — messages are only looping back.")
             elif seen_others:
                 print(f"[INFO] Connected to {len(seen_others)} peers via UDP broadcast.")
             else:
-                print("[INFO] Still waiting for discovery packets from other users...")
+                print("[INFO] Waiting for discovery packets from other users...")
 
     sock.close()
 
 
+# --------------------------
+# Network starter
+# --------------------------
 def start_network(username):
-    """Start both broadcaster and listener threads."""
-    print(f"[INFO] Starting UDP network test for {username}")
-    listener = threading.Thread(target=listen_for_users, args=(username,), daemon=True)
-    broadcaster = threading.Thread(target=broadcast_presence, args=(username,), daemon=True)
+    """Start broadcasting and listening in background threads."""
+    broadcaster_thread = threading.Thread(target=broadcast_presence, args=(username,), daemon=True)
+    listener_thread = threading.Thread(target=listen_for_users, args=(username,), daemon=True)
 
-    listener.start()
-    broadcaster.start()
+    broadcaster_thread.start()
+    listener_thread.start()
+
+    return broadcaster_thread, listener_thread  # threads returned in case you want to join or monitor
 
 
+# --------------------------
+# Main
+# --------------------------
 if __name__ == "__main__":
     user = input("Enter username: ").strip()
     start_network(user)
 
+    print("[INFO] UDP network running in background. Press Ctrl+C to exit.")
+
     try:
         while True:
-            time.sleep(1)
+            time.sleep(1)  # main thread free for other tasks or CLI
     except KeyboardInterrupt:
-        print("\n[INFO] Shutting down...")
+        print("\n[INFO] Shutting down UDP network...")
         RUNNING = False
         time.sleep(1)
