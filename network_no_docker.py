@@ -8,9 +8,10 @@ import time
 # Configuration
 # --------------------------
 MULTICAST_GROUP = "224.1.1.1"
-PORT = 50000
+PORT = 23
 TTL = 2  # LAN hop count
 RUNNING = True
+BROADCAST_INTERVAL = 5
 
 USE_MULTICAST = False  # True for LAN; False for hotspot / direct test
 TARGET_IP = MULTICAST_GROUP if USE_MULTICAST else "255.255.255.255"
@@ -43,10 +44,10 @@ def broadcast_presence(username):
             })
             sock.sendto(message.encode(), (TARGET_IP, PORT))
             print(f"[BROADCAST] Sent UDP message from {username}")
-            time.sleep(5)
+            time.sleep(BROADCAST_INTERVAL)
         except Exception as e:
             print(f"[ERROR] Broadcast failed: {e}")
-            time.sleep(5)
+            time.sleep(BROADCAST_INTERVAL)
 
     sock.close()
 
