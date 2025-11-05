@@ -9,22 +9,18 @@ import signal
 import time
 import threading
 
-import user_no_docker as user
+import user
 import verify_no_docker as verify
-from contactmanage_no_docker import (
+from contactmanage import (
     add_contact,
     list_contacts,
     verify_contact,
     admin_list,
-    admin_clear,
-    remove_contact
+    admin_clear
 )
-from network_no_docker import start_network
+from network import start_network
 from welcome import welcome_msg
 
-# ----------------------------
-# Host paths (Docker-free)
-# ----------------------------
 DATA_DIR = "/tmp/securedrop_test/shared"
 PRIVATE_DIR = "/tmp/securedrop_test/private"
 PASSWD_FILE = os.path.join(DATA_DIR, "passwd.json")
@@ -33,7 +29,6 @@ PASSWD_FILE = os.path.join(DATA_DIR, "passwd.json")
 # CLI command mapping
 # ----------------------------
 def goodbye_msg(username):
-    """Cleanup and exit."""
     print(f"\n[INFO] Logging out {username}...")
     print("[INFO] You have been removed from discovered users.")
     time.sleep(0.5)
@@ -45,7 +40,6 @@ command_map = {
     "add": add_contact,
     "list": list_contacts,
     "verify": verify_contact,
-    "remove": remove_contact,
     "admin_list": admin_list,
     "admin_clear": admin_clear,
     "clear": lambda _: os.system("clear"),
@@ -56,14 +50,13 @@ command_map = {
 # CLI loop
 # ----------------------------
 def main_cli(username):
-    """Command-line interface loop."""
     while True:
         try:
             cmd = input(f"{username}@securedrop.com: ").strip().lower()
             if cmd in command_map:
                 command_map[cmd](username)
             elif cmd == "help":
-                print("Available commands: add, list, verify, remove, clear, exit")
+                print("Available commands: add, list, verify, clear, exit")
                 if username.lower() == "admin":
                     print("admin_list, admin_clear")
             elif cmd == "":
@@ -103,7 +96,6 @@ def create_user_dirs(username):
 # Login or register
 # ----------------------------
 def login_or_register(data):
-    """Prompt the user to login or register."""
     action = input("Do you want to (l)ogin or (r)egister? [l/r]: ").strip().lower()
     if action == "r":
         username = input("Enter your Username: ").strip()
@@ -139,7 +131,6 @@ if __name__ == "__main__":
     create_user_dirs(username)
 
     # Cleanup handlers
-    atexit.register(goodbye_msg, username)
     signal.signal(signal.SIGTERM, lambda *_: goodbye_msg(username))
     signal.signal(signal.SIGINT, lambda *_: goodbye_msg(username))
 
