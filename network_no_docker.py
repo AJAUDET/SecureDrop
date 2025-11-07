@@ -8,7 +8,7 @@ import time
 # Configuration
 # --------------------------
 MULTICAST_GROUP = "224.1.1.1"
-PORT = 23
+PORT = 50000
 TTL = 2  # LAN hop count
 RUNNING = True
 BROADCAST_INTERVAL = 5
