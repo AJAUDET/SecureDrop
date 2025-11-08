@@ -42,3 +42,4 @@ if __name__ == '__main__':
         generateKeys(pubFile, privFile)
     else:
         print(f"Improper Usage")
+        sys.exit(1)
