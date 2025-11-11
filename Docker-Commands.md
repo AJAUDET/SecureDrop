@@ -8,7 +8,6 @@
   - Auto Login To Instance: ./launch_user.sh <username> <password> <email>
   - Auto Register New User: ./launch_user.sh --init
     - You will be prompted for a password and email
-  - test
 
 # Once inside container
   - You will be logged into an instance of securedrop and be fully registered
